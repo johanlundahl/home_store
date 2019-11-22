@@ -28,8 +28,12 @@ class MyDB():
     def delete(self, item):
         self.session.delete(item)
 
+    def sensor(self, name):
+        return self.session.query(Sensor).filter_by(name=name).all()
+
     def sensors(self):
-        return self.session.query(Sensor).all()
+        query = self.session.query(Sensor.name.distinct().label('name'))
+        return [row.name for row in query.all()]
 
 
 
