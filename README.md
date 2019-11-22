@@ -31,7 +31,7 @@ $ python3 -m temp_store.app
 ```
 
 ## How to use the application
-The application exposes http endpoint to interact with. 
+The application exposes http endpoint to interact with. The web application runs on port 5000 by default.
 
 Use the following to get a list of all sensors:
 ```
