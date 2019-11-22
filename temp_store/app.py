@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, jsonify
 from temp_store.model.sensor import Sensor
+from temp_store.filter import Filter
 from temp_store.db import MyDB
 from temp_store import db
 from temp_store.encoder import Encoder
@@ -13,23 +14,36 @@ db = MyDB(db.db_uri)
 
 @app.route('/api', methods=['GET'])
 def root():
-	return ''
+    return ''
 
 @app.route('/api/sensors', methods=['POST', 'GET'])
 def sensors():
-	if request.method == 'POST':
-		content = request.get_json()
-		if Sensor.valid_create(content):
-			with db:
-				db.add(Sensor.create(content))
-			return '', 200
-		else:
-			return '', 400
-	if request.method == 'GET':
-		with db:
-			sensors = db.sensors()
-			return jsonify(sensors)
+    if request.method == 'POST':
+        content = request.get_json()
+        if Sensor.valid_create(content):
+            with db:
+                db.add(Sensor.create(content))
+            return '', 200
+        else:
+            return '', 400
+    if request.method == 'GET':        
+        with db:
+            sensors = db.sensors()
+            result = [{'name': name, 'link': '/api/sensors/{}'.format(name)} for name in sensors]
+            return jsonify(result)
 
+@app.route('/api/sensors/<name>', methods=['GET'])
+def sensor(name):
+    if request.method == 'GET':
+        date_args = Filter.args_matching(request.args, 'date')
+        date_filters = [Filter.from_arg(date, request.args[date]) for date in date_args]
+
+        with db:
+            sensors = db.sensor(name)
+            for date_filter in date_filters:
+                sensors = [s for s in sensors if date_filter.evaluate(s)]
+            return jsonify(sensors)
+        return 500
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
