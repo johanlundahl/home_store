@@ -9,12 +9,14 @@ class Sensor(Base):
     temperature = Column(Float, nullable = False)
     humidity = Column(Float, nullable = False)
     timestamp = Column(DateTime, nullable = False)
+    date = Column(String(10), nullable = False)
 
     def __init__(self, name, temperature, humidity, timestamp):
         self.name = name
         self.temperature = temperature
         self.humidity = humidity
         self.timestamp = timestamp
+        self.date = timestamp.strftime('%Y-%m-%d')
 
     @classmethod
     def valid_create(cls, dict):
