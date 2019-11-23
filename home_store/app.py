@@ -1,9 +1,9 @@
 from flask import Flask, render_template, request, jsonify
-from temp_store.model.sensor import Sensor
-from temp_store.filter import Filter
-from temp_store.db import MyDB
-from temp_store import db
-from temp_store.encoder import Encoder
+from home_store.model.sensor import Sensor
+from home_store.filter import Filter
+from home_store.db import MyDB
+from home_store import db
+from home_store.encoder import Encoder
 
 
 app = Flask(__name__)

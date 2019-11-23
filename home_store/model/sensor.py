@@ -1,5 +1,5 @@
 from sqlalchemy import Column, String, Integer, Float, DateTime
-from temp_store.model.base import Base
+from home_store.model.base import Base
 from datetime import datetime
 
 class Sensor(Base):

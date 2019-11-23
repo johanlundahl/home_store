@@ -1,4 +1,4 @@
-# temp_store
+# home_store
 This project stores sensor reading values to a database. Other components can interact with this component through REST endpoints.
 
 
@@ -7,7 +7,7 @@ This project stores sensor reading values to a database. Other components can in
 Clone this git repo
 
 ```
-$ git clone https://github.com/johanlundahl/temp_store
+$ git clone https://github.com/johanlundahl/home_store
 ```
 
 
@@ -20,14 +20,14 @@ $ sudo pip install -r requirements.txt
 
 Create the database 
 ```
-$ python3 -m temp_store.db -create
+$ python3 -m home_store.db -create
 ```
 
 
 ## Running
 Run the application using
 ```
-$ python3 -m temp_store.app
+$ python3 -m home_store.app
 ```
 
 ## How to use the application

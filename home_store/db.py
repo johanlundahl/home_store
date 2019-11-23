@@ -1,12 +1,12 @@
 from sqlalchemy import create_engine, inspect
 from sqlalchemy.orm import sessionmaker, scoped_session
-from temp_store.model.base import Base
-from temp_store.model.sensor import Sensor
+from home_store.model.base import Base
+from home_store.model.sensor import Sensor
 from argparse import ArgumentParser
 import datetime
 import os
 
-db_file ='temp_store/sensors.db' 
+db_file ='home_store/sensors.db' 
 db_uri = 'sqlite:///{}'.format(db_file)
 
 
