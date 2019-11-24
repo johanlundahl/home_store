@@ -78,11 +78,3 @@ if __name__ == '__main__':
         delete()
     if not any([args.create, args.drop, args.summary, args.clean]):
         print('Need at least one argument.')
-    #my = MyDB(db_uri)    
-    #with my:
-    #    my.add(Sensor('fake', 12.0, 55.0, datetime.datetime.now()))
-
-    #with my:
-    #   print(len(my.sensors()))
-    #    for s in my.sensors():
-    #        print(s.name, s.temperature)
