@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, jsonify
 from home_store.model.sensor import Sensor
-from home_store.filter import Filter
+from pytils.filter import Filter
 from home_store.db import MyDB
 from home_store import db
 from home_store.encoder import Encoder
