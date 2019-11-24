@@ -3,7 +3,7 @@ from home_store.model.sensor import Sensor
 from pytils.filter import Filter
 from home_store.db import MyDB
 from home_store import db
-from home_store.encoder import Encoder
+from home_store.model.encoder import Encoder
 
 
 app = Flask(__name__)
