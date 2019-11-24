@@ -11,6 +11,8 @@ app.json_encoder = Encoder
 
 db = MyDB(db.db_uri)
 
+# TODO: add db package (db file and module)
+# TODO: move arguments to app module
 
 @app.route('/api', methods=['GET'])
 def root():
