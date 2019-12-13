@@ -12,10 +12,10 @@ $ git clone https://github.com/johanlundahl/home_store
 
 
 ## Requirements
-Install required python modules
+Requires python 3.6 or above. Install required python modules
 
 ```
-$ sudo pip install -r requirements.txt
+$ sudo pip3 install -r requirements.txt
 ```
 
 Create the database 
