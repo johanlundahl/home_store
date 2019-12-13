@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, jsonify
 from home_store.model.sensor import Sensor
 from pytils.filter import Filter
+from pytils import logger
 from home_store.db import MyDB
 from home_store import db
 from home_store.model.encoder import Encoder
@@ -13,6 +14,7 @@ db = MyDB(db.db_uri)
 
 # TODO: add db package (db file and module)
 # TODO: move arguments to app module
+# TODO: improve config
 
 @app.route('/api', methods=['GET'])
 def root():
@@ -48,4 +50,9 @@ def sensor(name):
         return 500
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0')
+    try:
+        logger.init()
+        app.run(host='0.0.0.0')
+    except Exception:
+        logger.exception('Application Exception')
+    
