@@ -35,6 +35,9 @@ class MyDB():
         query = self.session.query(Sensor.name.distinct().label('name'))
         return [row.name for row in query.all()]
 
+    def latest_sensor(self, name):
+        return self.session.query(Sensor).order_by(Sensor.timestamp.desc()).first()
+
 
 
 def get_inspect():
