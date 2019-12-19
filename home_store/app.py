@@ -49,6 +49,14 @@ def sensor(name):
             return jsonify(sensors)
         return 500
 
+@app.route('/api/sensors/<name>/latest', methods=['GET'])
+def sensor_latest(name):
+    if request.method == 'GET':
+        with db:
+            sensor = db.latest_sensor(name)
+            return jsonify(sensor)
+        return 500
+
 if __name__ == '__main__':
     try:
         logger.init()
