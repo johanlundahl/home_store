@@ -62,7 +62,7 @@ def sensor_latest(name):
 def sensor_trend(name):
     if request.method == 'GET':
         with db:
-            sensor = db.hourly_trend(name)
+            sensor = db.hourly_trend(name, days=2)
             return jsonify(sensor)
         return 500
 
