@@ -36,7 +36,7 @@ class MyDB():
         return [row.name for row in query.all()]
 
     def latest_sensor(self, name):
-        return self.session.query(Sensor).order_by(Sensor.timestamp.desc()).first()
+        return self.session.query(Sensor).filter(Sensor.name == name).order_by(Sensor.timestamp.desc()).first()
 
     def hourly_trend(self, name, days=7):
         last_week = datetime.now() - timedelta(days=days)
