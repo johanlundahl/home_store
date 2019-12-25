@@ -57,6 +57,17 @@ def sensor_latest(name):
             return jsonify(sensor)
         return 500
 
+
+@app.route('/api/sensors/<name>/trend', methods=['GET'])
+def sensor_trend(name):
+    if request.method == 'GET':
+        with db:
+            sensor = db.hourly_trend(name)
+            return jsonify(sensor)
+        return 500
+
+
+
 if __name__ == '__main__':
     try:
         logger.init()
