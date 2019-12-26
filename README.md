@@ -1,4 +1,4 @@
-# home_store
+# Home Store
 This project stores sensor reading values to a database. Other components can interact with this component through REST endpoints.
 
 
@@ -49,7 +49,9 @@ POST /api/sensors HTTP/1.1
 }
 ```
 
-Use the following to get sensor values for a sensor:
+Use any of the following to get sensor values for a sensor:
 ```
-GET /api/sensors/basement HTTP/1.1
+GET /api/sensors/<name> HTTP/1.1 - returns all sensor values for <name>
+GET /api/sensors/<name>/latest HTTP/1.1 - returns the latest sensor value for <name>
+GET /api/sensors/<name>/trend HTTP/1.1 - returns one sensor value per hour for the last two days for <name>
 ```
