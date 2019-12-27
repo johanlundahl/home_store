@@ -28,8 +28,8 @@ class MyDB():
     def delete(self, item):
         self.session.delete(item)
 
-    def sensor(self, name):
-        return self.session.query(Sensor).filter_by(name=name).all()
+    def sensor(self, name, page=1, size=20):
+        return self.session.query(Sensor).filter_by(name=name).offset((page-1)*size).limit(size).all()
 
     def sensors(self):
         query = self.session.query(Sensor.name.distinct().label('name'))
