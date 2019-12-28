@@ -31,7 +31,7 @@ $ python3 -m home_store.app
 ```
 
 ## How to use the application
-The application exposes http endpoint to interact with. The web application runs on port 5000 by default.
+The application exposes http endpoint to interact with. The web application runs on port 5000 by default and has the endpoints listed below.
 
 ### List sensors
 Use the following to get a list of all sensors:
