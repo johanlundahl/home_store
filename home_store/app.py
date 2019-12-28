@@ -63,8 +63,10 @@ def sensor_latest(name):
 @app.route('/api/sensors/<name>/trend', methods=['GET'])
 def sensor_trend(name):
     if request.method == 'GET':
+        limit = int(request.args['limit']) if 'limit' in request.args else 24 
+
         with db:
-            sensor = db.hourly_trend(name, days=2)
+            sensor = db.hourly_trend(name, limit=limit)
             return jsonify(sensor)
         return 500
 

@@ -75,7 +75,10 @@ GET /api/sensors/<name>/latest HTTP/1.1
 ```
 
 ### Get sensor trend
-This endpoint will return hourly sensor values from the last 48 hours.
+This endpoint will return the last 24 hourly sensor values. Use the `limit` attribute to change the number of values returned. 
 ```
 GET /api/sensors/<name>/trend HTTP/1.1 
 ```
+
+The following attributes are available:
+* `limit=[int]` limit the number of results to the given number.

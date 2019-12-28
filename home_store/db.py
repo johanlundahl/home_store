@@ -38,9 +38,8 @@ class MyDB():
     def latest_sensor(self, name):
         return self.session.query(Sensor).filter(Sensor.name == name).order_by(Sensor.timestamp.desc()).first()
 
-    def hourly_trend(self, name, days=7):
-        last_week = datetime.now() - timedelta(days=days)
-        return self.session.query(Sensor).filter(Sensor.name == name, Sensor.timestamp > last_week, extract('minute', Sensor.timestamp) == 0).all()
+    def hourly_trend(self, name, limit=24):
+        return self.session.query(Sensor).filter(Sensor.name == name, extract('minute', Sensor.timestamp) == 0).limit(limit).all()
 
 
 def get_inspect():
