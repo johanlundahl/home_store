@@ -67,6 +67,7 @@ def sensor_trend(name):
 
         with db:
             sensor = db.hourly_trend(name, limit=limit)
+            sensor = list(reversed(sensor))
             return jsonify(sensor)
         return 500
 
