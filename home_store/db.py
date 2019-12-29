@@ -41,6 +41,9 @@ class MyDB():
     def hourly_trend(self, name, limit=24):
         return self.session.query(Sensor).order_by(Sensor.timestamp.desc()).filter(Sensor.name == name, extract('minute', Sensor.timestamp) == 0).limit(limit).all()
 
+    def daily_trend(self, name, limit=24):
+        return self.session.query(Sensor).order_by(Sensor.timestamp.desc()).filter(Sensor.name == name, extract('hour', Sensor.timestamp) == 12, extract('minute', Sensor.timestamp) == 0).limit(limit).all()
+
 
 def get_inspect():
     engine = create_engine(db_uri)

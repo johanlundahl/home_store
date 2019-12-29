@@ -60,7 +60,7 @@ def sensor_latest(name):
         return 500
 
 
-@app.route('/api/sensors/<name>/trend', methods=['GET'])
+@app.route('/api/sensors/<name>/hourly-trend', methods=['GET'])
 def sensor_trend(name):
     if request.method == 'GET':
         limit = int(request.args['limit']) if 'limit' in request.args else 24 
@@ -71,7 +71,15 @@ def sensor_trend(name):
             return jsonify(sensor)
         return 500
 
-
+@app.route('/api/sensors/<name>/daily-trend', methods=['GET'])
+def sensor_daily_trend(name):
+    if request.method == 'GET':
+        limit = int(request.args['limit']) if 'limit' in request.args else 30 
+        with db:
+            sensor = db.daily_trend(name, limit=limit)
+            sensor = list(reversed(sensor))
+            return jsonify(sensor)
+        return 500
 
 if __name__ == '__main__':
     try:

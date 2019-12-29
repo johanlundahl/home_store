@@ -56,12 +56,13 @@ Use the following to get sensor values for a sensor:
 ```
 GET /api/sensors/<name> HTTP/1.1
 ```
+By default the 20 latest sensor values are returned, i.e. the same as `page=1&limit=20`.
 
 The following attributes are available:
 * `page=[int]` use together with size to paginate the results. First page should be 1
 * `size=[int]` use together with page to paginate the results.
 * `date=[string]` will filter the result to include values from the given date in the format `2019-12-27`
-* `datetime=[string]` will filter the result to include values that matches the given datetime in the format `2019--12-27 18:05:22`
+* `datetime=[string]` will filter the result to include values that matches the given datetime in the format `2019-12-27 18:05:22`
 
 Both the `date` and the `datetime` attributes can have an operator added to it. The valid operators are `qe`, `gt`, `ge`, `lt`, `te`. The following filters all sensor values newer than 2019-12-27:
 ```
