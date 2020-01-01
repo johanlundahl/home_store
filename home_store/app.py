@@ -44,8 +44,10 @@ def sensor(name):
 
         page = int(request.args['page']) if 'page' in request.args else 1 
         size = int(request.args['size']) if 'size' in request.args else 20
+        sort = request.args['sort'] if 'sort' in request.args else 'desc'
+
         with db:
-            sensors = db.sensor(name, page=page, size=size)
+            sensors = db.sensor(name, page=page, size=size, sort=sort)
             for date_filter in date_filters:
                 sensors = [s for s in sensors if date_filter.evaluate(s)]
             return jsonify(sensors)
