@@ -28,6 +28,13 @@ Run the application using
 $ python3 -m home_store.app
 ```
 
+## Logging
+Application events are logged to the application log file and can be viewed through
+```
+tail -f application.log
+```
+
+
 ## How to use the application
 The application exposes http endpoint to interact with. The web application runs on port 5000 by default and has the endpoints listed below.
 
