@@ -1,7 +1,7 @@
 # Home Store
 This project stores sensor reading values to a database. Other components can interact with this component through REST endpoints.
 
-This project is intended to use with [Home Monitor](http://github.com/johanlundahl/home_monitor), [Temp Sensor](http://github.com/johanlundahl/temp_sensor) and [Home Eye](http://github.com/johanlundahl/home_eye).
+This project is suitable to run on a Raspberry Pi and is intended to use with [Home Monitor](http://github.com/johanlundahl/home_monitor), [Temp Sensor](http://github.com/johanlundahl/temp_sensor), [Home Eye](http://github.com/johanlundahl/home_eye) and [Mosquitto MQTT Broker](https://randomnerdtutorials.com/how-to-install-mosquitto-broker-on-raspberry-pi/).
 
 ## Installation
 
@@ -11,8 +11,6 @@ Clone this git repo
 $ git clone https://github.com/johanlundahl/home_store
 ```
 
-
-## Requirements
 Requires python 3.6 or above. Install required python modules
 
 ```
@@ -23,7 +21,6 @@ Create the database
 ```
 $ python3 -m home_store.db -create
 ```
-
 
 ## Running
 Run the application using
