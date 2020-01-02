@@ -31,7 +31,7 @@ $ python3 -m home_store.app
 ## Logging
 Application events are logged to the application log file and can be viewed through
 ```
-tail -f application.log
+$ tail -f application.log
 ```
 
 
