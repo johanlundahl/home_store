@@ -1,6 +1,7 @@
 # Home Store
 This project stores sensor reading values to a database. Other components can interact with this component through REST endpoints.
 
+This project is intended to use with [Home Monitor](http://github.com/johanlundahl/home_monitor), [Temp Sensor](http://github.com/johanlundahl/temp_sensor) and [Home Eye](http://github.com/johanlundahl/home_eye).
 
 ## Installation
 
@@ -63,6 +64,7 @@ The following attributes are available:
 * `size=[int]` use together with page to paginate the results.
 * `date=[string]` will filter the result to include values from the given date in the format `2019-12-27`
 * `datetime=[string]` will filter the result to include values that matches the given datetime in the format `2019-12-27 18:05:22`
+* `sort=[asc|desc]` will order the result ascending or descending based on timestamp
 
 Both the `date` and the `datetime` attributes can have an operator added to it. The valid operators are `qe`, `gt`, `ge`, `lt`, `te`. The following filters all sensor values newer than 2019-12-27:
 ```
