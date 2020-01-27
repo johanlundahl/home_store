@@ -47,7 +47,7 @@ class MyDB():
         order_by = self.get_sort_order(sort)
         return self.session.query(Sensor).order_by(order_by).filter(Sensor.name == name, extract('hour', Sensor.timestamp) == 12, extract('minute', Sensor.timestamp) == 0).limit(limit).all()
 
-    def get_sort_order(sorting):
+    def get_sort_order(self, sorting):
         order_by = Sensor.timestamp.desc()
         if sort == 'asc':
             order_by = Sensor.timestamp.asc()
