@@ -29,9 +29,7 @@ class MyDB():
         self.session.delete(item)
 
     def sensor(self, name, page=1, size=20, sort='desc'):
-        order_by = Sensor.timestamp.desc()
-        if sort == 'asc':
-            order_by = Sensor.timestamp.asc()
+        order_by = get_sort_order(sort)
         return self.session.query(Sensor).filter_by(name=name).order_by(order_by).offset((page-1)*size).limit(size).all()
 
     def sensors(self):
@@ -41,11 +39,19 @@ class MyDB():
     def latest_sensor(self, name):
         return self.session.query(Sensor).filter(Sensor.name == name).order_by(Sensor.timestamp.desc()).first()
 
-    def hourly_trend(self, name, limit=24):
-        return self.session.query(Sensor).order_by(Sensor.timestamp.desc()).filter(Sensor.name == name, extract('minute', Sensor.timestamp) == 0).limit(limit).all()
+    def hourly_trend(self, name, limit=24, sort='desc'):
+        order_by = get_sort_order(sort)
+        return self.session.query(Sensor).order_by(order_by).filter(Sensor.name == name, extract('minute', Sensor.timestamp) == 0).limit(limit).all()
 
-    def daily_trend(self, name, limit=24):
-        return self.session.query(Sensor).order_by(Sensor.timestamp.desc()).filter(Sensor.name == name, extract('hour', Sensor.timestamp) == 12, extract('minute', Sensor.timestamp) == 0).limit(limit).all()
+    def daily_trend(self, name, limit=24, sort='desc'):
+        order_by = get_sort_order(sort)
+        return self.session.query(Sensor).order_by(order_by).filter(Sensor.name == name, extract('hour', Sensor.timestamp) == 12, extract('minute', Sensor.timestamp) == 0).limit(limit).all()
+
+    def get_sort_order(sorting):
+        order_by = Sensor.timestamp.desc()
+        if sort == 'asc':
+            order_by = Sensor.timestamp.asc()
+        return order_by    
 
 
 def get_inspect():

@@ -69,7 +69,6 @@ def sensor_trend(name):
 
         with db:
             sensor = db.hourly_trend(name, limit=limit)
-            sensor = list(reversed(sensor))
             return jsonify(sensor)
         return 500
 
@@ -79,7 +78,6 @@ def sensor_daily_trend(name):
         limit = int(request.args['limit']) if 'limit' in request.args else 30 
         with db:
             sensor = db.daily_trend(name, limit=limit)
-            sensor = list(reversed(sensor))
             return jsonify(sensor)
         return 500
 
