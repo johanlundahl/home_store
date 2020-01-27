@@ -49,7 +49,7 @@ class MyDB():
 
     def get_sort_order(self, sorting):
         order_by = Sensor.timestamp.desc()
-        if sort == 'asc':
+        if sorting == 'asc':
             order_by = Sensor.timestamp.asc()
         return order_by    
 
