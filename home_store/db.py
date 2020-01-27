@@ -29,7 +29,7 @@ class MyDB():
         self.session.delete(item)
 
     def sensor(self, name, page=1, size=20, sort='desc'):
-        order_by = get_sort_order(sort)
+        order_by = self.get_sort_order(sort)
         return self.session.query(Sensor).filter_by(name=name).order_by(order_by).offset((page-1)*size).limit(size).all()
 
     def sensors(self):
@@ -40,11 +40,11 @@ class MyDB():
         return self.session.query(Sensor).filter(Sensor.name == name).order_by(Sensor.timestamp.desc()).first()
 
     def hourly_trend(self, name, limit=24, sort='desc'):
-        order_by = get_sort_order(sort)
+        order_by = self.get_sort_order(sort)
         return self.session.query(Sensor).order_by(order_by).filter(Sensor.name == name, extract('minute', Sensor.timestamp) == 0).limit(limit).all()
 
     def daily_trend(self, name, limit=24, sort='desc'):
-        order_by = get_sort_order(sort)
+        order_by = self.get_sort_order(sort)
         return self.session.query(Sensor).order_by(order_by).filter(Sensor.name == name, extract('hour', Sensor.timestamp) == 12, extract('minute', Sensor.timestamp) == 0).limit(limit).all()
 
     def get_sort_order(sorting):
