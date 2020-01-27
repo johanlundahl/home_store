@@ -44,7 +44,7 @@ def sensor(name):
 
         page = int(request.args['page']) if 'page' in request.args else 1 
         size = int(request.args['size']) if 'size' in request.args else 20
-        sort = request.args['sort'] if 'sort' in request.args else 'desc'
+        sort = request.args['sort'] if 'sort' in request.args else 'asc'
 
         with db:
             sensors = db.sensor(name, page=page, size=size, sort=sort)
@@ -66,7 +66,7 @@ def sensor_latest(name):
 def sensor_trend(name):
     if request.method == 'GET':
         limit = int(request.args['limit']) if 'limit' in request.args else 24
-        sort = request.args['sort'] if 'sort' in request.args else 'desc'
+        sort = request.args['sort'] if 'sort' in request.args else 'asc'
 
         with db:
             sensor = db.hourly_trend(name, limit=limit, sort=sort)
@@ -77,7 +77,7 @@ def sensor_trend(name):
 def sensor_daily_trend(name):
     if request.method == 'GET':
         limit = int(request.args['limit']) if 'limit' in request.args else 30 
-        sort = request.args['sort'] if 'sort' in request.args else 'desc'
+        sort = request.args['sort'] if 'sort' in request.args else 'asc'
 
         with db:
             sensor = db.daily_trend(name, limit=limit, sort=sort)
