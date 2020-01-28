@@ -48,11 +48,8 @@ class MyDB():
         return self.session.query(Sensor).order_by(order_by).filter(Sensor.name == name, extract('hour', Sensor.timestamp) == 12, extract('minute', Sensor.timestamp) == 0).limit(limit).all()
 
     def get_sort_order(self, sorting):
-        order_by = Sensor.timestamp.desc()
-        if sorting == 'asc':
-            order_by = Sensor.timestamp.asc()
-        return order_by    
-
+        order_by = Sensor.timestamp.asc() if sorting == 'asc' else Sensor.timestamp.desc()
+        return order_by
 
 def get_inspect():
     engine = create_engine(db_uri)
