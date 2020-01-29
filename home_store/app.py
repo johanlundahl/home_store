@@ -40,7 +40,9 @@ def sensors():
 def sensor(name):
     if request.method == 'GET':
         date_args = Filter.args_matching(request.args, 'date')
+        date_args += Filter.args_matching(request.args, 'timestamp')
         date_filters = [Filter.from_arg(date, request.args[date]) for date in date_args]
+
 
         page = int(request.args['page']) if 'page' in request.args else 1 
         size = int(request.args['size']) if 'size' in request.args else 20
