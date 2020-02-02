@@ -44,7 +44,6 @@ class MyDB():
         return self.session.query(Sensor).order_by(order_by).filter(Sensor.name == name, extract('minute', Sensor.timestamp) == 0).limit(limit).all()
 
     def sensor_history(self, name, from_time=datetime.now()-timedelta(days=1), to_time=datetime.now()):
-        order_by = self.get_sort_order(sort)
         return self.session.query(Sensor).filter(Sensor.name == name, Sensor.timestamp > from_time, Sensor.timestamp < to_time).order_by(Sensor.timestamp.desc()).all()
 
     def get_sort_order(self, sorting):
