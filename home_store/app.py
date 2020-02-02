@@ -43,13 +43,12 @@ def sensor(name):
         date_args += Filter.args_matching(request.args, 'timestamp')
         date_filters = [Filter.from_arg(date, request.args[date]) for date in date_args]
 
-
-        page = int(request.args['page']) if 'page' in request.args else 1 
-        size = int(request.args['size']) if 'size' in request.args else 20
+        offset = int(request.args['offset']) if 'offset' in request.args else 0 
+        limit = int(request.args['limit']) if 'limit' in request.args else 20
         sort = request.args['sort'] if 'sort' in request.args else 'desc'
 
         with db:
-            sensors = db.sensor(name, page=page, size=size, sort=sort)
+            sensors = db.sensor(name, offset=offset, limit=limit, sort=sort)
             for date_filter in date_filters:
                 sensors = [s for s in sensors if date_filter.evaluate(s)]
             return jsonify(sensors)
@@ -75,15 +74,24 @@ def sensor_trend(name):
             return jsonify(sensor)
         return 500
 
-@app.route('/api/sensors/<name>/daily-trend', methods=['GET'])
-def sensor_daily_trend(name):
+@app.route('/api/sensors/<name>/history', methods=['GET'])
+def sensor_history(name):
     if request.method == 'GET':
-        limit = int(request.args['limit']) if 'limit' in request.args else 30 
+
+        print('TIMESTAMP:', Filter.args_matching(request.args, 'timestamp'))
+
+        date_args = Filter.args_matching(request.args, 'date')
+        date_args += Filter.args_matching(request.args, 'timestamp')
+        date_filters = [Filter.from_arg(date, request.args[date]) for date in date_args]
+
+        resolution = int(request.args['resolution']) if 'resolution' in request.args else 20
         sort = request.args['sort'] if 'sort' in request.args else 'desc'
 
         with db:
-            sensor = db.daily_trend(name, limit=limit, sort=sort)
-            return jsonify(sensor)
+            sensors = db.sensor(name, offset=offset, limit=limit, sort=sort)
+            for date_filter in date_filters:
+                sensors = [s for s in sensors if date_filter.evaluate(s)]
+            return jsonify(sensors)
         return 500
 
 if __name__ == '__main__':

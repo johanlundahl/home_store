@@ -28,9 +28,9 @@ class MyDB():
     def delete(self, item):
         self.session.delete(item)
 
-    def sensor(self, name, page=1, size=20, sort='desc'):
-        order_by = self.get_sort_order(sort)
-        return self.session.query(Sensor).filter_by(name=name).order_by(order_by).offset((page-1)*size).limit(size).all()
+    def sensor(self, name, offset=0, limit=20, sort='desc'):
+        order_by = self.get_sort_order(sort)''
+        return self.session.query(Sensor).filter_by(name=name).order_by(order_by).offset(offset).limit(limit).all()
 
     def sensors(self):
         query = self.session.query(Sensor.name.distinct().label('name'))
@@ -43,7 +43,7 @@ class MyDB():
         order_by = self.get_sort_order(sort)
         return self.session.query(Sensor).order_by(order_by).filter(Sensor.name == name, extract('minute', Sensor.timestamp) == 0).limit(limit).all()
 
-    def daily_trend(self, name, limit=24, sort='desc'):
+    def sensor_history(self, name, limit=24, sort='desc'):
         order_by = self.get_sort_order(sort)
         return self.session.query(Sensor).order_by(order_by).filter(Sensor.name == name, extract('hour', Sensor.timestamp) == 12, extract('minute', Sensor.timestamp) == 0).limit(limit).all()
 
