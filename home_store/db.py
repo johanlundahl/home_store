@@ -29,7 +29,7 @@ class MyDB():
         self.session.delete(item)
 
     def sensor(self, name, offset=0, limit=20, sort='desc'):
-        order_by = self.get_sort_order(sort)''
+        order_by = self.get_sort_order(sort)
         return self.session.query(Sensor).filter_by(name=name).order_by(order_by).offset(offset).limit(limit).all()
 
     def sensors(self):
