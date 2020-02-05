@@ -62,18 +62,6 @@ def sensor_latest(name):
             return jsonify(sensor)
         return 500
 
-
-@app.route('/api/sensors/<name>/hourly-trend', methods=['GET'])
-def sensor_trend(name):
-    if request.method == 'GET':
-        limit = int(request.args['limit']) if 'limit' in request.args else 24
-        sort = request.args['sort'] if 'sort' in request.args else 'desc'
-
-        with db:
-            sensor = db.hourly_trend(name, limit=limit, sort=sort)
-            return jsonify(sensor)
-        return 500
-
 @app.route('/api/sensors/<name>/history', methods=['GET'])
 def sensor_history(name):
     if request.method == 'GET':

@@ -61,16 +61,16 @@ Use the following to get sensor values for a sensor:
 ```
 GET /api/sensors/<name> HTTP/1.1
 ```
-By default the 20 latest sensor values are returned, i.e. the same as `page=1&limit=20`.
+By default the 20 latest sensor values are returned, i.e. the same as `offset=0&limit=20`.
 
 The following attributes are available:
-* `page=[int]` use together with size to paginate the results. First page should be 1
-* `size=[int]` use together with page to paginate the results.
+* `offset=[int]` use together with limit to paginate the results.
+* `limit=[int]` use together with offset to paginate the results.
 * `date=[string]` will filter the result to include values from the given date in the format `2019-12-27`
-* `datetime=[string]` will filter the result to include values that matches the given datetime in the format `2019-12-27 18:05:22`
+* `timestamp=[string]` will filter the result to include values that matches the given datetime in the format `2019-12-27 18:05:22`
 * `sort=[asc|desc]` will order the result ascending or descending based on timestamp
 
-Both the `date` and the `datetime` attributes can have an operator added to it. The valid operators are `qe`, `gt`, `ge`, `lt`, `te`. The following filters all sensor values newer than 2019-12-27:
+Both the `date` and the `timestamp` attributes can have an operator added to it. The valid operators are `qe`, `gt`, `ge`, `lt`, `te`. The following filters all sensor values newer than 2019-12-27:
 ```
 GET /api/sensors/<name>?date[gt]=2019-12-27 HTTP/1.1
 ``` 
@@ -81,11 +81,13 @@ Use the following to get the latest sensor value for <name> as per its datetime 
 GET /api/sensors/<name>/latest HTTP/1.1
 ```
 
-### Get sensor trend
-This endpoint will return the last 24 hourly sensor values. Use the `limit` attribute to change the number of values returned. 
+### Get sensor history
+This endpoint will return historical sensor values. Use the `to` and `from` attributes to specify the time period. 
 ```
-GET /api/sensors/<name>/trend HTTP/1.1 
+GET /api/sensors/<name>/history HTTP/1.1 
 ```
 
 The following attributes are available:
-* `limit=[int]` limit the number of results to the given number.
+* `to=[string]` the end time in the format `2020-02-05 12:30:00`.
+* `from=[string]` the start time in the format `2020-02-01 23:15:30`.
+* `resolution=[int]` will reduce the number of sensor values to the specified value. The resulting values are scattered over the given date interval.
