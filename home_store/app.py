@@ -6,33 +6,40 @@ from home_store.db import MyDB
 from home_store import db
 from home_store.model.encoder import Encoder
 from datetime import datetime
+import os
 
 app = Flask(__name__)
 app.json_encoder = Encoder
 
-db = MyDB(db.db_uri)
-
-# TODO: add db package (db file and module)
-# TODO: move arguments to app module
-# TODO: improve config
+mydb = MyDB(db.db_uri)
 
 @app.route('/api', methods=['GET'])
 def root():
     return ''
+
+@app.route('/api/status', methods=['GET'])
+def status():
+    db_size = '{} kb'.format(os.path.getsize(db.db_file) // 1000)
+    with mydb:
+        db_count = mydb.size()
+        oldest = mydb.oldest().timestamp
+        newest = mydb.newest().timestamp
+        result = {'size': db_size, 'count': db_count, 'oldest': oldest, 'newest': newest}
+        return jsonify(result)
 
 @app.route('/api/sensors', methods=['POST', 'GET'])
 def sensors():
     if request.method == 'POST':
         content = request.get_json()
         if Sensor.valid_create(content):
-            with db:
-                db.add(Sensor.create(content))
+            with mydb:
+                mydb.add(Sensor.create(content))
             return '', 200
         else:
             return '', 400
     if request.method == 'GET':        
-        with db:
-            sensors = db.sensors()
+        with mydb:
+            sensors = mydb.sensors()
             result = [{'name': name, 'link': '/api/sensors/{}'.format(name)} for name in sensors]
             return jsonify(result)
 
@@ -47,8 +54,8 @@ def sensor(name):
         limit = int(request.args['limit']) if 'limit' in request.args else 20
         sort = request.args['sort'] if 'sort' in request.args else 'desc'
 
-        with db:
-            sensors = db.sensor(name, offset=offset, limit=limit, sort=sort)
+        with mydb:
+            sensors = mydb.sensor(name, offset=offset, limit=limit, sort=sort)
             for date_filter in date_filters:
                 sensors = [s for s in sensors if date_filter.evaluate(s)]
             return jsonify(sensors)
@@ -57,8 +64,8 @@ def sensor(name):
 @app.route('/api/sensors/<name>/latest', methods=['GET'])
 def sensor_latest(name):
     if request.method == 'GET':
-        with db:
-            sensor = db.latest_sensor(name)
+        with mydb:
+            sensor = mydb.latest_sensor(name)
             return jsonify(sensor)
         return 500
 
@@ -69,8 +76,8 @@ def sensor_history(name):
         to_time = datetime.strptime(request.args['to'], '%Y-%m-%d %H:%M:%S') if 'to' in request.args else datetime.now()
         resolution = int(request.args['resolution']) if 'resolution' in request.args else 20
 
-        with db:
-            sensors = db.sensor_history(name, from_time=from_time, to_time=to_time)
+        with mydb:
+            sensors = mydb.sensor_history(name, from_time=from_time, to_time=to_time)
             sensors = sensors[0::int(len(sensors)/resolution)] if len(sensors) > resolution else sensors
             return jsonify(sensors)
         return 500

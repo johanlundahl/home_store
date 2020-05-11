@@ -50,6 +50,15 @@ class MyDB():
         order_by = Sensor.timestamp.asc() if sorting == 'asc' else Sensor.timestamp.desc()
         return order_by
 
+    def newest(self):
+        return self.session.query(Sensor).order_by(Sensor.timestamp.desc()).first()
+
+    def oldest(self):
+        return self.session.query(Sensor).order_by(Sensor.timestamp.asc()).first()
+
+    def size(self):
+        return self.session.query(Sensor).count()
+
 def get_inspect():
     engine = create_engine(db_uri)
     return inspect(engine)

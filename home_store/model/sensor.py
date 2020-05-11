@@ -36,3 +36,6 @@ class Sensor(Base):
         result = {**{k: v for k, v in self.__dict__.items()}}
         del result['_sa_instance_state']
         return result
+
+    def __repr__(self):
+        return 'Sensor({}, {}, {}, {})'.format(self.name, self.temperature, self.humidity, self.timestamp)
