@@ -19,9 +19,9 @@ def root():
 
 @app.route('/api/status', methods=['GET'])
 def status():
-    db_size = '{} kb'.format(os.path.getsize(db.db_file) // 1000)
     with mydb:
         db_count = mydb.size()
+        db_size = os.path.getsize(db.db_file)
         oldest = mydb.oldest().timestamp
         newest = mydb.newest().timestamp
         result = {'size': db_size, 'count': db_count, 'oldest': oldest, 'newest': newest}
