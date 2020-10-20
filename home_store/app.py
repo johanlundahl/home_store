@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, jsonify
 from home_store.model.sensor import Sensor
-from pytils.filter import Filter
-from pytils import logger
+from pytils.http import Filter
+from pytils import log
 from home_store.db import MyDB
 from home_store import db
 from home_store.model.encoder import Encoder
@@ -84,8 +84,8 @@ def sensor_history(name):
 
 if __name__ == '__main__':
     try:
-        logger.init()
+        log.init()
         app.run(host='0.0.0.0')
     except Exception:
-        logger.exception('Application Exception')
+        log.exception('Application Exception')
     
