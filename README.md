@@ -19,7 +19,7 @@ $ sudo pip3 install -r requirements.txt
 
 Create the database 
 ```
-$ python3 -m home_store.db -create
+$ python3 -m home_store.cmdtool init
 ```
 
 ## Running
@@ -33,6 +33,12 @@ Application events are logged to the application log file and can be viewed thro
 ```
 $ tail -f application.log
 ```
+
+## Database functionality
+Use the cmdtool to setup, clean or drop the database. It can also help you simulate database entries for testing. Se the complete list of functionality by entering
+```
+$ python3 -m home_store.cmdtool -h
+``` 
 
 
 ## How to use the application
