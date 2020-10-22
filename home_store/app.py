@@ -1,13 +1,13 @@
-from flask import Flask, render_template, request, jsonify
-from home_store.model.sensor import Sensor
-from pytils.http import Filter
-from pytils import log
-from home_store.db import MyDB
-from home_store import db
-from home_store.model.encoder import Encoder
 from datetime import datetime
 import os
 import json
+from flask import Flask, render_template, request, jsonify
+from pytils.http import Filter
+from pytils import log
+from home_store import db
+from home_store.db import MyDB
+from home_store.model.encoder import Encoder
+from home_store.model.sensor import Sensor
 
 app = Flask(__name__)
 app.json_encoder = Encoder
