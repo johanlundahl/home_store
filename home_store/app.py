@@ -7,6 +7,7 @@ from home_store import db
 from home_store.model.encoder import Encoder
 from datetime import datetime
 import os
+import json
 
 app = Flask(__name__)
 app.json_encoder = Encoder
@@ -47,9 +48,11 @@ def sensors():
 def sensor(name):
     if request.method == 'GET':
         date_args = Filter.args_matching(request.args, 'date')
-        date_args += Filter.args_matching(request.args, 'timestamp')
-        date_filters = [Filter.from_arg(date, request.args[date]) for date in date_args]
-
+        timestamp_args = Filter.args_matching(request.args, 'timestamp')
+                
+        date_filters = [Filter.from_arg(date, request.args[date], ignore_type=True) for date in date_args]
+        date_filters += [Filter.from_arg(date, request.args[date], ignore_type=False) for date in timestamp_args]
+        
         offset = int(request.args['offset']) if 'offset' in request.args else 0 
         limit = int(request.args['limit']) if 'limit' in request.args else 20
         sort = request.args['sort'] if 'sort' in request.args else 'desc'
