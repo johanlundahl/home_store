@@ -69,6 +69,11 @@ GET /api/sensors/<name> HTTP/1.1
 ```
 By default the 20 latest sensor values are returned, i.e. the same as `offset=0&limit=20`.
 
+| Parameter     | Type          | Required? | Description  	|
+| ------------- | -------------	| -----		| ---			|
+| `offset`      | int 			| optional 	| Use together with limit to paginate the results. |
+
+
 The following attributes are available:
 * `offset=[int]` use together with limit to paginate the results.
 * `limit=[int]` use together with offset to paginate the results.
