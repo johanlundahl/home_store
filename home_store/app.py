@@ -57,12 +57,39 @@ def sensor(name):
         limit = int(request.args['limit']) if 'limit' in request.args else 20
         sort = request.args['sort'] if 'sort' in request.args else 'desc'
 
+        #### FIX: filter in query instead of after call, limit do not work this way!!!
         with mydb:
             sensors = mydb.sensor(name, offset=offset, limit=limit, sort=sort)
+            sensors2 = mydb.sensor2(name, offset=offset, limit=limit, sort=sort)
+            print('SENSOR', len(sensors2))
             for date_filter in date_filters:
                 sensors = [s for s in sensors if date_filter.evaluate(s)]
             return jsonify(sensors)
         return 500
+
+@app.route('/api/sensors2/<name>', methods=['GET'])
+def sensor2(name):
+    if request.method == 'GET':
+        date_args = Filter.args_matching(request.args, 'date')
+        timestamp_args = Filter.args_matching(request.args, 'timestamp')
+                
+        date_filters = [Filter.from_arg(date, request.args[date], ignore_type=True) for date in date_args]
+        date_filters += [Filter.from_arg(date, request.args[date], ignore_type=False) for date in timestamp_args]
+        
+        offset = int(request.args['offset']) if 'offset' in request.args else 0 
+        limit = int(request.args['limit']) if 'limit' in request.args else 20
+        sort = request.args['sort'] if 'sort' in request.args else 'desc'
+
+        #### FIX: filter in query instead of after call, limit do not work this way!!!
+        with mydb:
+            #sensors = mydb.sensor(name, offset=offset, limit=limit, sort=sort)
+            date_filters = [a.to_json() for a in date_filters]
+            sensors = mydb.sensor2(name, filters=date_filters, offset=offset, limit=limit, sort=sort)
+            #for date_filter in date_filters:
+            #    sensors = [s for s in sensors if date_filter.evaluate(s)]
+            return jsonify(sensors)
+        return 500
+
 
 @app.route('/api/sensors/<name>/latest', methods=['GET'])
 def sensor_latest(name):

@@ -1,3 +1,4 @@
 flask
 sqlalchemy
+sqlalchemy_filters
 git+https://github.com/johanlundahl/pytils.git

@@ -1,8 +1,9 @@
-from argparse import ArgumentParser
 from datetime import datetime, timedelta
 import os
+import operator
 from sqlalchemy import create_engine, inspect, extract
 from sqlalchemy.orm import sessionmaker, scoped_session
+from sqlalchemy_filters import apply_filters
 from home_store.model.base import Base
 from home_store.model.sensor import Sensor
 
@@ -31,6 +32,14 @@ class MyDB():
     def sensor(self, name, offset=0, limit=20, sort='desc'):
         order_by = self.get_sort_order(sort)
         return self.session.query(Sensor).filter_by(name=name).order_by(order_by).offset(offset).limit(limit).all()
+
+    def sensor2(self, name, filters=[], offset=0, limit=20, sort='desc'):
+        order_by = self.get_sort_order(sort)
+        query = self.session.query(Sensor).filter_by(name=name)
+        for a_filter in filters:
+            #filter_spec = [{'field': 'date', 'op': '==', 'value':'2020-10-03'}]
+            query = apply_filters(query, a_filter)
+        return query.order_by(order_by).offset(offset).limit(limit).all()
 
     def sensors(self):
         query = self.session.query(Sensor.name.distinct().label('name'))
