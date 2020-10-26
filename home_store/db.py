@@ -29,15 +29,10 @@ class MyDB():
     def delete(self, item):
         self.session.delete(item)
 
-    def sensor(self, name, offset=0, limit=20, sort='desc'):
-        order_by = self.get_sort_order(sort)
-        return self.session.query(Sensor).filter_by(name=name).order_by(order_by).offset(offset).limit(limit).all()
-
-    def sensor2(self, name, filters=[], offset=0, limit=20, sort='desc'):
+    def sensor(self, name, filters=[], offset=0, limit=20, sort='desc'):
         order_by = self.get_sort_order(sort)
         query = self.session.query(Sensor).filter_by(name=name)
         for a_filter in filters:
-            #filter_spec = [{'field': 'date', 'op': '==', 'value':'2020-10-03'}]
             query = apply_filters(query, a_filter)
         return query.order_by(order_by).offset(offset).limit(limit).all()
 
