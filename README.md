@@ -103,19 +103,31 @@ Example response:
 ]
 ```
 
+| Parameter     | Type          | Description  	|
+| ------------- | -------------	| ---			|
+| `link`     	| string 		| Link to the sensor endpoint.  |
+| `name` 		| string 		| Name of the sensor. |
+
+
 ### Add sensor value
 Use the following to add a new sensor value:
 ```
 POST /api/sensors HTTP/1.1
-{
-	"name": "basement",
-	"temperature": 18,
-	"humidity": 55,
-	"timestamp": "2019-09-04 21:10:03"
-}
 ```
 
-With the following fields.
+Example request:
+```
+POST /api/sensors HTTP/1.1
+Host: localhost:5000
+Content-Type: application/json
+
+{
+	"name": "basement",
+	"temperature": 25,
+	"humidity": 57,
+	"timestamp": "2019-12-27 11:14:03"
+}
+```
 
 | Parameter     | Type          | Required? | Description  	|
 | ------------- | -------------	| -----		| ---			|
