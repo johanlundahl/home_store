@@ -190,6 +190,18 @@ Example response:
 ]
 ```
 
+Where the parameters in the response are described as:
+
+| Parameter     | Type          | Description   |
+| ------------- | ------------- | ---           |
+| `date`        | string        | The date of when the sensor value was measured.  |
+| `humidity`    | real          | The measured humidity in %. |
+| `id`          | int           | The unique id of the sensor record. |
+| `name`        | string        | Name of the sensor. |
+| `temperature` | real          | The measured temperature in degrees Celsius. |
+| `timestamp`   | string        | The date and time of when the sensor value was measured. |
+
+
 Possible errors:
 
 | Error code    | Description   |
@@ -202,6 +214,33 @@ Use the following to get the latest sensor value for <name> as per its datetime 
 ```
 GET /api/sensors/<name>/latest HTTP/1.1
 ```
+
+Example request:
+
+
+Example response:
+``` json
+{
+    "date": "2020-10-27",
+    "humidity": 56.8,
+    "id": 493455,
+    "name": "basement",
+    "temperature": 18.8,
+    "timestamp": "2020-10-27 21:04:43"
+}
+```
+
+Where the parameters in the response are described as:
+
+| Parameter     | Type          | Description   |
+| ------------- | ------------- | ---           |
+| `date`        | string        | The date of when the sensor value was measured.  |
+| `humidity`    | real          | The measured humidity in %. |
+| `id`          | int           | The unique id of the sensor record. |
+| `name`        | string        | Name of the sensor. |
+| `temperature` | real          | The measured temperature in degrees Celsius. |
+| `timestamp`   | string        | The date and time of when the sensor value was measured. |
+
 
 ### Get sensor history
 This endpoint will return historical sensor values. Use the `to` and `from` attributes to specify the time period. 
