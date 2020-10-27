@@ -83,6 +83,16 @@ POST /api/sensors HTTP/1.1
 }
 ```
 
+With the following fields.
+
+| Parameter     | Type          | Required? | Description  	|
+| ------------- | -------------	| -----		| ---			|
+| `name`     	| string 		| required 	| Name of the sensor to add a value for. |
+| `temperature` | int 			| optional 	| Temperature sensor value. |
+| `humidity`    | int 			| optional 	| Humidity sensor value. |
+| `timestamp`   | string		| required 	| Timestamp of when the sensor values are generated. |
+
+
 ### Get sensor values
 Use the following to get sensor values for a sensor:
 ```
@@ -95,7 +105,7 @@ By default the 20 latest sensor values are returned, i.e. the same as `offset=0&
 | `date`     	| string 		| optional 	| Will filter the result to include values from the given date in the format `2019-12-27`. |
 | `limit`      	| int 			| optional 	| Use together with offset to paginate the results. |
 | `offset`      | int 			| optional 	| Use together with limit to paginate the results. |
-| `sort`      	| [asc|desc]	| optional 	| Order the result ascending or descending based on timestamp. |
+| `sort`      	| enum			| optional 	| Order the result ascending or descending based on timestamp with possible values of `asc`or `desc. |
 | `timestamp`   | int 			| optional 	| Filters the result to include values that matches the given datetime in the format `2019-12-27 18:05:22`. |
 
 Both the `date` and the `timestamp` attributes can have an operator added to it. The valid operators are `qe`, `gt`, `ge`, `lt`, `te`. 
