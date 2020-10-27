@@ -50,6 +50,27 @@ Use the following to get a list of all sensors:
 GET /api/sensors HTTP/1.1
 ```
 
+Example request:
+```
+GET /api/sensors HTTP/1.1
+Host: your-server:5000
+Content-Type: application/json
+```
+
+Example response:
+``` json
+[
+    {
+        "link": "/api/sensors/basement",
+        "name": "basement"
+    },
+    {
+        "link": "/api/sensors/garage",
+        "name": "garage"
+    }
+]
+```
+
 ### Add sensor value
 Use the following to add a new sensor value:
 ```
@@ -77,12 +98,14 @@ By default the 20 latest sensor values are returned, i.e. the same as `offset=0&
 | `sort`      	| [asc|desc]	| optional 	| Order the result ascending or descending based on timestamp. |
 | `timestamp`   | int 			| optional 	| Filters the result to include values that matches the given datetime in the format `2019-12-27 18:05:22`. |
 
+Both the `date` and the `timestamp` attributes can have an operator added to it. The valid operators are `qe`, `gt`, `ge`, `lt`, `te`. 
 
-Both the `date` and the `timestamp` attributes can have an operator added to it. The valid operators are `qe`, `gt`, `ge`, `lt`, `te`. The following filters all sensor values newer than 2019-12-27:
+Example request:
 ```
 GET /api/sensors/<name>?date[gt]=2019-12-27 HTTP/1.1
 ``` 
 
+Example response
 
 
 ### Get latest sensor value
