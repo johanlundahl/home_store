@@ -68,12 +68,12 @@ Example response:
 }
 ```
 
-| Parameter     | Type          | Description  	|
-| ------------- | -------------	| ---			|
-| `count`     	| int 			| Number of records in the database. |
-| `newest` 		| string 		| Timestamp of the newest sensor value in the database. |
-| `oldest`    	| string 		| Timestamp of the oldest sensor value in the database. |
-| `size`   		| int			| The file size of the database in bytes. |
+| Parameter     | Type          | Description   |
+| ------------- | ------------- | ---           |
+| `count`       | int           | Number of records in the database. |
+| `newest`      | string        | Timestamp of the newest sensor value in the database. |
+| `oldest`      | string        | Timestamp of the oldest sensor value in the database. |
+| `size`        | int           | The file size of the database in bytes. |
 
 
 ### List sensors
@@ -103,10 +103,10 @@ Example response:
 ]
 ```
 
-| Parameter     | Type          | Description  	|
-| ------------- | -------------	| ---			|
-| `link`     	| string 		| Link to the sensor endpoint.  |
-| `name` 		| string 		| Name of the sensor. |
+| Parameter     | Type          | Description   |
+| ------------- | ------------- | ---           |
+| `link`        | string        | Link to the sensor endpoint.  |
+| `name`        | string        | Name of the sensor. |
 
 
 ### Add sensor value
@@ -122,26 +122,26 @@ Host: localhost:5000
 Content-Type: application/json
 
 {
-	"name": "basement",
-	"temperature": 25,
-	"humidity": 57,
-	"timestamp": "2019-12-27 11:14:03"
+    "name": "basement",
+    "temperature": 25,
+    "humidity": 57,
+    "timestamp": "2019-12-27 11:14:03"
 }
 ```
 
-| Parameter     | Type          | Required? | Description  	|
-| ------------- | -------------	| -----		| ---			|
-| `name`     	| string 		| required 	| Name of the sensor to add a value for. |
-| `temperature` | int 			| required 	| Temperature sensor value. |
-| `humidity`    | int 			| required 	| Humidity sensor value. |
-| `timestamp`   | string		| required 	| Timestamp of when the sensor values are generated. |
+| Parameter     | Type          | Required? | Description   |
+| ------------- | ------------- | -----     | ---           |
+| `name`        | string        | required  | Name of the sensor to add a value for. |
+| `temperature` | int           | required  | Temperature sensor value. |
+| `humidity`    | int           | required  | Humidity sensor value. |
+| `timestamp`   | string        | required  | Timestamp of when the sensor values are generated. |
 
 
 Possible errors:
 
-| Error code    | Description  	|
-| ------------- | -----------	|
-| 400     		| Any of the required parameters are missing. 	|
+| Error code    | Description   |
+| ------------- | -----------   |
+| 400           | Any of the required parameters are missing.   |
 
 
 ### Get sensor values
@@ -151,13 +151,13 @@ GET /api/sensors/<name> HTTP/1.1
 ```
 By default the 20 latest sensor values are returned, i.e. the same as `offset=0&limit=20`.
 
-| Parameter     | Type          | Required? | Description  	|
-| ------------- | -------------	| -----		| ---			|
-| `date`     	| string 		| optional 	| Will filter the result to include values from the given date in the format `2019-12-27`. |
-| `limit`      	| int 			| optional 	| Use together with offset to paginate the results. |
-| `offset`      | int 			| optional 	| Use together with limit to paginate the results. |
-| `sort`      	| enum			| optional 	| Order the result ascending or descending based on timestamp with possible values of `asc`or `desc.` |
-| `timestamp`   | int 			| optional 	| Filters the result to include values that matches the given datetime in the format `2019-12-27 18:05:22`. |
+| Parameter     | Type          | Required? | Description   |
+| ------------- | ------------- | -----     | ---           |
+| `date`        | string        | optional  | Will filter the result to include values from the given date in the format `2019-12-27`. |
+| `limit`       | int           | optional  | Use together with offset to paginate the results. |
+| `offset`      | int           | optional  | Use together with limit to paginate the results. |
+| `sort`        | enum          | optional  | Order the result ascending or descending based on timestamp with possible values of `asc`or `desc.` |
+| `timestamp`   | int           | optional  | Filters the result to include values that matches the given datetime in the format `2019-12-27 18:05:22`. |
 
 Both the `date` and the `timestamp` attributes can have an operator added to it. The valid operators are `qe`, `gt`, `ge`, `lt`, `te`. 
 
@@ -192,9 +192,9 @@ Example response:
 
 Possible errors:
 
-| Error code    | Description  	|
-| ------------- | -----------	|
-| 500     		| Any of the querystring parameters are not valid. 	|
+| Error code    | Description   |
+| ------------- | -----------   |
+| 500           | Any of the querystring parameters are not valid.  |
 
 
 ### Get latest sensor value
@@ -208,6 +208,12 @@ This endpoint will return historical sensor values. Use the `to` and `from` attr
 ```
 GET /api/sensors/<name>/history HTTP/1.1 
 ```
+
+| Parameter     | Type          | Required? | Description   |
+| ------------- | ------------- | -----     | ---           |
+| `from`        | string        | optional  | Start time in the format `2020-02-01 23:15:30`. |
+| `to`          | string        | optional  | End time in the format `2020-02-05 12:30:00`. |
+| `resolution`  | int           | optional  | Reduces the number of sensor values to the specified value. The resulting values are scattered over the given date interval. |
 
 The following attributes are available:
 * `to=[string]` the end time in the format `2020-02-05 12:30:00`.
