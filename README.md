@@ -71,20 +71,19 @@ By default the 20 latest sensor values are returned, i.e. the same as `offset=0&
 
 | Parameter     | Type          | Required? | Description  	|
 | ------------- | -------------	| -----		| ---			|
+| `date`     	| string 		| optional 	| Will filter the result to include values from the given date in the format `2019-12-27`. |
+| `limit`      	| int 			| optional 	| Use together with offset to paginate the results. |
 | `offset`      | int 			| optional 	| Use together with limit to paginate the results. |
+| `sort`      	| [asc|desc]	| optional 	| Order the result ascending or descending based on timestamp. |
+| `timestamp`   | int 			| optional 	| Filters the result to include values that matches the given datetime in the format `2019-12-27 18:05:22`. |
 
-
-The following attributes are available:
-* `offset=[int]` use together with limit to paginate the results.
-* `limit=[int]` use together with offset to paginate the results.
-* `date=[string]` will filter the result to include values from the given date in the format `2019-12-27`
-* `timestamp=[string]` will filter the result to include values that matches the given datetime in the format `2019-12-27 18:05:22`
-* `sort=[asc|desc]` will order the result ascending or descending based on timestamp
 
 Both the `date` and the `timestamp` attributes can have an operator added to it. The valid operators are `qe`, `gt`, `ge`, `lt`, `te`. The following filters all sensor values newer than 2019-12-27:
 ```
 GET /api/sensors/<name>?date[gt]=2019-12-27 HTTP/1.1
 ``` 
+
+
 
 ### Get latest sensor value
 Use the following to get the latest sensor value for <name> as per its datetime attribute:
