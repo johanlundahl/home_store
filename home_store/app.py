@@ -47,6 +47,47 @@ def sensors():
             result = [{'name': name, 'link': '/api/sensors/{}'.format(name)} for name in sensors]
             return jsonify(result)
 
+
+@app.route('/api/v2/sensors/<name>', methods=['GET'])
+@http.validate_querystrings(method='GET')
+def sensor_v2(name):
+    result = {
+        'name': 'sensor',
+        'latest': '/api/v2/sensors/{}/latest'.format(name),
+        'history': '/api/v2/sensors/{}/history'.format(name),
+        }
+    return jsonify(result)
+
+@app.route('/api/v2/sensors/<name>/latest', methods=['GET'])
+@http.validate_querystrings(method='GET', parameters=[])
+def sensor_latest_v2(name):
+    if request.method == 'GET':
+        with mydb:
+            sensor = mydb.latest_sensor(name)
+            return jsonify(sensor)
+        return 500
+
+@app.route('/api/v2/sensors/<name>/history', methods=['GET'])
+@http.validate_querystrings(method='GET', parameters=['date', 'timestamp', 'page', 'page_size', 'sort'])
+def sensor_history_v2(name):
+    if request.method == 'GET':
+        date_args = Filter.args_matching(request.args, 'date')
+        timestamp_args = Filter.args_matching(request.args, 'timestamp')
+                
+        date_filters = [Filter.from_arg(date, request.args[date], ignore_type=True) for date in date_args]
+        date_filters += [Filter.from_arg(date, request.args[date], ignore_type=False) for date in timestamp_args]
+        
+        offset = int(request.args['page']) if 'page' in request.args else 0 
+        limit = int(request.args['page_size']) if 'page_size' in request.args else 20
+        sort = request.args['sort'] if 'sort' in request.args else 'desc'
+
+        with mydb:
+            date_filters = [a.to_json() for a in date_filters]
+            sensors = mydb.sensor(name, filters=date_filters, offset=offset, limit=limit, sort=sort)
+            return jsonify(sensors)
+        return 500
+
+
 @app.route('/api/sensors/<name>', methods=['GET'])
 @http.validate_querystrings(method='GET', parameters=['date', 'timestamp', 'offset', 'limit', 'sort'])
 def sensor(name):
