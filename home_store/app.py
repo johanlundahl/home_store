@@ -4,6 +4,7 @@ import json
 from flask import Flask, render_template, request, jsonify
 from pytils.http import Filter
 from pytils import log, http
+from pytils.config import cfg
 from home_store import db
 from home_store.db import MyDB
 from home_store.model.encoder import Encoder
@@ -94,7 +95,7 @@ def sensor_history(name):
 if __name__ == '__main__':
     try:
         log.init()
-        app.run(host='0.0.0.0')
+        app.run(host=cfg.server.address, port=cfg.server.port)
     except Exception:
         log.exception('Application Exception')
     

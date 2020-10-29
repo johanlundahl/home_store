@@ -1,0 +1,7 @@
+
+# The server address and port which the web server will 
+# expose its endpoint through
+server:
+  address: "localhost"
+  port: 5000
+  
