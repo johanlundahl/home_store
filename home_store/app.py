@@ -3,7 +3,7 @@ import os
 import json
 from flask import Flask, render_template, request, jsonify
 from pytils.http import Filter
-from pytils import log
+from pytils import log, http
 from home_store import db
 from home_store.db import MyDB
 from home_store.model.encoder import Encoder
@@ -19,6 +19,7 @@ def root():
     return ''
 
 @app.route('/api/status', methods=['GET'])
+@http.validate_querystrings(method='GET')
 def status():
     with mydb:
         db_count = mydb.size()
@@ -29,6 +30,7 @@ def status():
         return jsonify(result)
 
 @app.route('/api/sensors', methods=['POST', 'GET'])
+@http.validate_querystrings(method='GET')
 def sensors():
     if request.method == 'POST':
         content = request.get_json()
@@ -37,7 +39,7 @@ def sensors():
                 mydb.add(Sensor.create(content))
             return '', 200
         else:
-            return '', 400
+            return 'All required parameters were not received.', 400
     if request.method == 'GET':        
         with mydb:
             sensors = mydb.sensors()
@@ -45,6 +47,7 @@ def sensors():
             return jsonify(result)
 
 @app.route('/api/sensors/<name>', methods=['GET'])
+@http.validate_querystrings(method='GET', parameters=['date', 'timestamp', 'offset', 'limit', 'sort'])
 def sensor(name):
     if request.method == 'GET':
         date_args = Filter.args_matching(request.args, 'date')
@@ -65,6 +68,7 @@ def sensor(name):
 
 
 @app.route('/api/sensors/<name>/latest', methods=['GET'])
+@http.validate_querystrings(method='GET', parameters=[])
 def sensor_latest(name):
     if request.method == 'GET':
         with mydb:
@@ -73,6 +77,7 @@ def sensor_latest(name):
         return 500
 
 @app.route('/api/sensors/<name>/history', methods=['GET'])
+@http.validate_querystrings(method='GET', parameters=['from', 'to', 'resolution'])
 def sensor_history(name):
     if request.method == 'GET':
         from_time = datetime.strptime(request.args['from'], '%Y-%m-%d %H:%M:%S') if 'from' in request.args else datetime.now()-datetime.timedelta(days=1)
@@ -83,7 +88,8 @@ def sensor_history(name):
             sensors = mydb.sensor_history(name, from_time=from_time, to_time=to_time)
             sensors = sensors[0::int(len(sensors)/resolution)] if len(sensors) > resolution else sensors
             return jsonify(sensors)
-        return 500
+    return '', 500
+
 
 if __name__ == '__main__':
     try:
