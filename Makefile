@@ -13,3 +13,5 @@ init:
 	pip3 install -r requirements.txt
 	python3 -m home_store.cmdtool init
 
+logging:
+	tail -f application.log
