@@ -11,27 +11,22 @@ Clone this git repo
 $ git clone https://github.com/johanlundahl/home_store
 ```
 
-Requires python 3.6 or above. Install required python modules
+Requires python 3.6 or above. Install required python modules and create the database
 
 ```
-$ sudo pip3 install -r requirements.txt
-```
-
-Create the database 
-```
-$ python3 -m home_store.cmdtool init
+$ make init
 ```
 
 ## Running
 Run the application using
 ```
-$ python3 -m home_store.app
+$ make run
 ```
 
 ## Logging
 Application events are logged to the application log file and can be viewed through
 ```
-$ tail -f application.log
+$ make logging
 ```
 
 ## Database functionality
@@ -68,12 +63,20 @@ Example response:
 }
 ```
 
+Where the parameters are described as:
+
 | Parameter     | Type          | Description   |
 | ------------- | ------------- | ---           |
 | `count`       | int           | Number of records in the database. |
 | `newest`      | string        | Timestamp of the newest sensor value in the database. |
 | `oldest`      | string        | Timestamp of the oldest sensor value in the database. |
 | `size`        | int           | The file size of the database in bytes. |
+
+Possible errors:
+
+| Error code    | Description   |
+| ------------- | -----------   |
+| 400           | Called with unsupported querystring parameter.   |
 
 
 ### List sensors
@@ -103,10 +106,18 @@ Example response:
 ]
 ```
 
+Where the parameters are described as:
+
 | Parameter     | Type          | Description   |
 | ------------- | ------------- | ---           |
 | `link`        | string        | Link to the sensor endpoint.  |
 | `name`        | string        | Name of the sensor. |
+
+Possible errors:
+
+| Error code    | Description   |
+| ------------- | -----------   |
+| 400           | Called with unsupported querystring parameter.   |
 
 
 ### Add sensor value
@@ -128,6 +139,7 @@ Content-Type: application/json
     "timestamp": "2019-12-27 11:14:03"
 }
 ```
+Where the parameters are described as:
 
 | Parameter     | Type          | Required? | Description   |
 | ------------- | ------------- | -----     | ---           |
@@ -206,7 +218,7 @@ Possible errors:
 
 | Error code    | Description   |
 | ------------- | -----------   |
-| 500           | Any of the querystring parameters are not valid.  |
+| 400           | Any of the querystring parameters are not valid.  |
 
 
 ### Get latest sensor value
@@ -216,7 +228,11 @@ GET /api/sensors/<name>/latest HTTP/1.1
 ```
 
 Example request:
-
+```
+GET /api/sensors/basement/latest HTTP/1.1
+Host: localhost:5000
+Content-Type: application/json
+```
 
 Example response:
 ``` json
@@ -241,6 +257,12 @@ Where the parameters in the response are described as:
 | `temperature` | real          | The measured temperature in degrees Celsius. |
 | `timestamp`   | string        | The date and time of when the sensor value was measured. |
 
+Possible errors:
+
+| Error code    | Description   |
+| ------------- | -----------   |
+| 400           | Any of the querystring parameters are not valid.  |
+
 
 ### Get sensor history
 This endpoint will return historical sensor values. Use the `to` and `from` attributes to specify the time period. 
@@ -254,7 +276,3 @@ GET /api/sensors/<name>/history HTTP/1.1
 | `to`          | string        | optional  | End time in the format `2020-02-05 12:30:00`. |
 | `resolution`  | int           | optional  | Reduces the number of sensor values to the specified value. The resulting values are scattered over the given date interval. |
 
-The following attributes are available:
-* `to=[string]` the end time in the format `2020-02-05 12:30:00`.
-* `from=[string]` the start time in the format `2020-02-01 23:15:30`.
-* `resolution=[int]` will reduce the number of sensor values to the specified value. The resulting values are scattered over the given date interval.
