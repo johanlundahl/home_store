@@ -44,6 +44,9 @@ $ python3 -m home_store.cmdtool -h
 ## How to use the application
 The application exposes http endpoint to interact with. The web application runs on port 5000 by default and has the endpoints listed below.
 
+The following endpoints are exposed by the application:
+[Status](#status)
+[List sensors](#list-sensors)
 
 ### Status
 Get the status of the application database:
