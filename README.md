@@ -23,6 +23,11 @@ Run the application using
 $ make run
 ```
 
+To make the application start automatically at reboot run the following command
+```
+$ make autostart
+```
+
 ## Logging
 Application events are logged to the application log file and can be viewed through
 ```
