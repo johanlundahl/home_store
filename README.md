@@ -47,6 +47,11 @@ The application exposes http endpoint to interact with. The web application runs
 The following endpoints are exposed by the application:
 * [Status](#status)
 * [List sensors](#list-sensors)
+* [Add sensor value](#add-sensor-value)
+* [Get sensor values](#get-sensor-values)
+* [Get latest sensor value](#get-latest-sensor-value)
+* [Get sensor history](#get-sensor-history)
+
 
 ### Status
 Get the status of the application database:
