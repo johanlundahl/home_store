@@ -1,5 +1,5 @@
 from flask.json import JSONEncoder
-from home_store.model.sensor import Sensor
+from home_store.models import Sensor
 from datetime import datetime
 
 class Encoder(JSONEncoder):

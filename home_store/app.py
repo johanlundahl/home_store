@@ -5,40 +5,38 @@ from flask import Flask, render_template, request, jsonify
 from pytils.http import Filter
 from pytils import log, http
 from pytils import config
-from home_store import db
-from home_store.db import MyDB
+from home_store.models import mydb, Sensor
 from home_store.model.encoder import Encoder
-from home_store.model.sensor import Sensor
 
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///sensors.db'
 app.json_encoder = Encoder
+mydb.init_app(app)
 
-mydb = MyDB(db.db_uri)
-
-@app.route('/api', methods=['GET'])
+@app.route('/api/v2', methods=['GET'])
 def root():
     return ''
 
-@app.route('/api/status', methods=['GET'])
+@app.route('/api/v2/status', methods=['GET'])
 @http.validate_querystrings(method='GET')
 def status():
     with mydb:
         db_count = mydb.size()
-        db_size = os.path.getsize(db.db_file)
-        oldest = mydb.oldest().timestamp
-        newest = mydb.newest().timestamp
+        db_size = os.path.getsize('home_store/sensors.db')
+        oldest = mydb.oldest().timestamp if mydb.oldest() is not None else '' 
+        newest = mydb.newest().timestamp if mydb.newest() is not None else ''
         result = {'size': db_size, 'count': db_count, 'oldest': oldest, 'newest': newest}
         return jsonify(result)
 
-@app.route('/api/sensors', methods=['POST', 'GET'])
+@app.route('/api/v2/sensors', methods=['POST', 'GET'])
 @http.validate_querystrings(method='GET')
 def sensors():
     if request.method == 'POST':
         content = request.get_json()
         if Sensor.valid_create(content):
             with mydb:
-                mydb.add(Sensor.create(content))
-            return '', 200
+                sensor = mydb.add(Sensor.create(content))
+                return jsonify(sensor.to_json())
         else:
             return 'All required parameters were not received.', 400
     if request.method == 'GET':        
@@ -51,12 +49,13 @@ def sensors():
 @app.route('/api/v2/sensors/<name>', methods=['GET'])
 @http.validate_querystrings(method='GET')
 def sensor_v2(name):
-    result = {
-        'name': 'sensor',
-        'latest': '/api/v2/sensors/{}/latest'.format(name),
-        'history': '/api/v2/sensors/{}/history'.format(name),
-        }
-    return jsonify(result)
+    with mydb:
+        sensor = mydb.latest_sensor(name)
+        if sensor is not None:
+            
+            return jsonify(sensor.to_json_summary())
+        else:
+            return '', 404
 
 @app.route('/api/v2/sensors/<name>/latest', methods=['GET'])
 @http.validate_querystrings(method='GET', parameters=[])

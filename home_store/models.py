@@ -1,30 +1,20 @@
 from datetime import datetime, timedelta
 import os
 import operator
-from sqlalchemy import create_engine, inspect, extract
-from sqlalchemy.orm import sessionmaker, scoped_session
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import extract
 from sqlalchemy_filters import apply_filters
-from home_store.model.base import Base
-from home_store.model.sensor import Sensor
 
-db_file ='home_store/sensors.db' 
-db_uri = 'sqlite:///{}'.format(db_file)
-
-
-class MyDB():
-    def __init__(self, uri):
-        self.engine = create_engine(uri)
-        self.session = scoped_session(sessionmaker(bind=self.engine))
-
+class MyDB(SQLAlchemy):
     def __enter__(self):
-        self.session()
+        return self
 
     def __exit__(self, *args):
         self.session.commit()
-        self.session.remove()
 
     def add(self, item):
         self.session.add(item)
+        return item
 
     def delete(self, item):
         self.session.delete(item)
@@ -67,3 +57,51 @@ class MyDB():
 
     def size(self):
         return self.session.query(Sensor).count()
+
+mydb = MyDB()
+
+
+class Sensor(mydb.Model):
+    __tablename__ = 'sensors'
+    id = mydb.Column(mydb.Integer, primary_key = True)
+    name = mydb.Column(mydb.String(50), nullable = False)
+    temperature = mydb.Column(mydb.Float, nullable = False)
+    humidity = mydb.Column(mydb.Float, nullable = False)
+    timestamp = mydb.Column(mydb.DateTime, nullable = False)
+    date = mydb.Column(mydb.String(10), nullable = False)
+
+    def __init__(self, name, temperature, humidity, timestamp):
+        self.name = name
+        self.temperature = temperature
+        self.humidity = humidity
+        self.timestamp = timestamp
+        self.date = timestamp.strftime('%Y-%m-%d')
+
+    @classmethod
+    def valid_create(cls, dict):
+        required = cls.__init__.__code__.co_varnames
+        return all(k in dict.keys() for k in required if k not in ['self', 'new_state'])
+
+    @classmethod
+    def valid_update(cls, dict):
+        required = cls.__init__.__code__.co_varnames
+        return any(k in dict.keys() for k in required if k not in ['self', 'new_state'])
+
+    @classmethod
+    def create(cls, dict):
+        return cls(dict['name'], dict['temperature'], dict['humidity'], datetime.strptime(dict['timestamp'], '%Y-%m-%d %H:%M:%S'))
+
+    def to_json(self):
+        result = {**{k: v for k, v in self.__dict__.items()}}
+        del result['_sa_instance_state']
+        return result
+
+    def to_json_summary(self):
+        return {
+            'name': self.name, 
+            'latest': '/api/v2/sensors/{}/latest'.format(self.name), 
+            'history': '/api/v2/sensors/{}/history'.format(self.name)
+        }
+
+    def __repr__(self):
+        return 'Sensor({}, {}, {}, {})'.format(self.name, self.temperature, self.humidity, self.timestamp)

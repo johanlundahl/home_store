@@ -17,6 +17,9 @@ logging:
 run:
 	python3 -m home_store.app
 
+test:
+	python3 -m unittest tests/test_app.py
+		
 update:
 	git pull
 	pip3 install -r requirements.txt	
