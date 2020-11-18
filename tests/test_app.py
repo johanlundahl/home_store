@@ -89,6 +89,59 @@ class IntegrationTest(TestCase):
         self.assertEqual('outdoor', response.json['name'])
         self.assertIn('latest', response.json)
 
+    def test_get_a_sensor_with_wrong_querystring(self):
+        response = self.client.get('/api/v2/sensors/garage?size')
+        self.assertEqual(400, response.status_code)
+
+    def test_sensor_latest(self):
+        data = {
+            "name": "garage",
+            "temperature": 10,
+            "humidity": 70,
+            "timestamp": "2020-11-20 13:17:03"
+        }
+        first = self.client.post('/api/v2/sensors', json=data)
+        data = {
+            "name": "garage",
+            "temperature": 20,
+            "humidity": 80,
+            "timestamp": "2020-11-21 13:17:03"
+        }
+        second = self.client.post('/api/v2/sensors', json=data)
+        data = {
+            "name": "garage",
+            "temperature": 20,
+            "humidity": 80,
+            "timestamp": "2020-11-20 14:20:03"
+        }
+        third = self.client.post('/api/v2/sensors', json=data)
+        response = self.client.get('/api/v2/sensors/garage/latest')
+        self.assertEqual('2020-11-21 13:17:03', response.json['timestamp'])
+        
+    def test_sensor_latest_with_wrong_querystring(self):
+        response = self.client.get('/api/v2/sensors/garage/latest?page_size')
+        self.assertEqual(400, response.status_code)
+        
+    def test_get_sensor_readings(self):
+        data = {
+            "name": "garage",
+            "temperature": 10,
+            "humidity": 70,
+            "timestamp": "2020-11-20 13:17:03"
+        }
+        first = self.client.post('/api/v2/sensors', json=data)
+        response = self.client.get('/api/v2/sensors/garage/readings')
+        self.assertEqual(1, len(response.json))
+        data = {
+            "name": "garage",
+            "temperature": 1,
+            "humidity": 7,
+            "timestamp": "2020-11-20 14:05:03"
+        }
+        first = self.client.post('/api/v2/sensors', json=data)
+        response = self.client.get('/api/v2/sensors/garage/readings')
+        self.assertEqual(2, len(response.json))
+
 
 if __name__ == '__main__':
     unittest.main()

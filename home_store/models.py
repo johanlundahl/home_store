@@ -89,7 +89,12 @@ class Sensor(mydb.Model):
 
     @classmethod
     def create(cls, dict):
-        return cls(dict['name'], dict['temperature'], dict['humidity'], datetime.strptime(dict['timestamp'], '%Y-%m-%d %H:%M:%S'))
+        return cls(
+            dict['name'], 
+            dict['temperature'], 
+            dict['humidity'], 
+            datetime.strptime(dict['timestamp'], '%Y-%m-%d %H:%M:%S')
+        )
 
     def to_json(self):
         result = {**{k: v for k, v in self.__dict__.items()}}

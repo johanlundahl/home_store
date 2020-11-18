@@ -1,7 +1,7 @@
 from datetime import datetime
 import os
 import json
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, url_for
 from pytils.http import Filter
 from pytils import log, http
 from pytils import config
@@ -17,8 +17,8 @@ mydb.init_app(app)
 
 @app.route('/api/v2', methods=['GET'])
 def root():
-
-    return ''
+    endpoints = [str(rule) for rule in app.url_map.iter_rules() if len(rule.arguments) == 0]
+    return jsonify(endpoints)
 
 @app.route('/api/v2/status', methods=['GET'])
 @http.validate_querystrings(method='GET')
@@ -55,7 +55,6 @@ def sensor_v2(name):
     with mydb:
         sensor = mydb.latest_sensor(name)
         if sensor is not None:
-            
             return jsonify(sensor.to_json_summary())
         else:
             return '', 404
@@ -63,75 +62,70 @@ def sensor_v2(name):
 @app.route('/api/v2/sensors/<name>/latest', methods=['GET'])
 @http.validate_querystrings(method='GET', parameters=[])
 def sensor_latest_v2(name):
-    if request.method == 'GET':
-        with mydb:
-            sensor = mydb.latest_sensor(name)
-            return jsonify(sensor)
-        return 500
+    with mydb:
+        sensor = mydb.latest_sensor(name)
+        return jsonify(sensor)
+    return 500
 
-@app.route('/api/v2/sensors/<name>/history', methods=['GET'])
+@app.route('/api/v2/sensors/<name>/readings', methods=['GET'])
 @http.validate_querystrings(method='GET', parameters=['date', 'timestamp', 'page', 'page_size', 'sort'])
 def sensor_history_v2(name):
-    if request.method == 'GET':
-        date_args = Filter.args_matching(request.args, 'date')
-        timestamp_args = Filter.args_matching(request.args, 'timestamp')
-                
-        date_filters = [Filter.from_arg(date, request.args[date], ignore_type=True) for date in date_args]
-        date_filters += [Filter.from_arg(date, request.args[date], ignore_type=False) for date in timestamp_args]
-        
-        offset = int(request.args['page']) if 'page' in request.args else 0 
-        limit = int(request.args['page_size']) if 'page_size' in request.args else 20
-        sort = request.args['sort'] if 'sort' in request.args else 'desc'
+    date_args = Filter.args_matching(request.args, 'date')
+    timestamp_args = Filter.args_matching(request.args, 'timestamp')
+            
+    date_filters = [Filter.from_arg(date, request.args[date], ignore_type=True) for date in date_args]
+    date_filters += [Filter.from_arg(date, request.args[date], ignore_type=False) for date in timestamp_args]
+    
+    offset = int(request.args['page']) if 'page' in request.args else 0 
+    limit = int(request.args['page_size']) if 'page_size' in request.args else 20
+    sort = request.args['sort'] if 'sort' in request.args else 'desc'
 
-        with mydb:
-            date_filters = [a.to_json() for a in date_filters]
-            sensors = mydb.sensor(name, filters=date_filters, offset=offset, limit=limit, sort=sort)
-            return jsonify(sensors)
-        return 500
+    with mydb:
+        date_filters = [a.to_json() for a in date_filters]
+        sensors = mydb.sensor(name, filters=date_filters, offset=offset, limit=limit, sort=sort)
+        return jsonify(sensors)
+    return 500
 
 
 @app.route('/api/sensors/<name>', methods=['GET'])
 @http.validate_querystrings(method='GET', parameters=['date', 'timestamp', 'offset', 'limit', 'sort'])
 def sensor(name):
-    if request.method == 'GET':
-        date_args = Filter.args_matching(request.args, 'date')
-        timestamp_args = Filter.args_matching(request.args, 'timestamp')
-                
-        date_filters = [Filter.from_arg(date, request.args[date], ignore_type=True) for date in date_args]
-        date_filters += [Filter.from_arg(date, request.args[date], ignore_type=False) for date in timestamp_args]
-        
-        offset = int(request.args['offset']) if 'offset' in request.args else 0 
-        limit = int(request.args['limit']) if 'limit' in request.args else 20
-        sort = request.args['sort'] if 'sort' in request.args else 'desc'
+    date_args = Filter.args_matching(request.args, 'date')
+    timestamp_args = Filter.args_matching(request.args, 'timestamp')
+            
+    date_filters = [Filter.from_arg(date, request.args[date], ignore_type=True) for date in date_args]
+    date_filters += [Filter.from_arg(date, request.args[date], ignore_type=False) for date in timestamp_args]
+    
+    offset = int(request.args['offset']) if 'offset' in request.args else 0 
+    limit = int(request.args['limit']) if 'limit' in request.args else 20
+    sort = request.args['sort'] if 'sort' in request.args else 'desc'
 
-        with mydb:
-            date_filters = [a.to_json() for a in date_filters]
-            sensors = mydb.sensor(name, filters=date_filters, offset=offset, limit=limit, sort=sort)
-            return jsonify(sensors)
-        return 500
+    with mydb:
+        date_filters = [a.to_json() for a in date_filters]
+        sensors = mydb.sensor(name, filters=date_filters, offset=offset, limit=limit, sort=sort)
+        return jsonify(sensors)
+    return 500
 
 
 @app.route('/api/sensors/<name>/latest', methods=['GET'])
 @http.validate_querystrings(method='GET', parameters=[])
 def sensor_latest(name):
-    if request.method == 'GET':
-        with mydb:
-            sensor = mydb.latest_sensor(name)
-            return jsonify(sensor)
-        return 500
+    with mydb:
+        sensor = mydb.latest_sensor(name)
+        return jsonify(sensor)
+    return 500
 
 @app.route('/api/sensors/<name>/history', methods=['GET'])
 @http.validate_querystrings(method='GET', parameters=['from', 'to', 'resolution'])
 def sensor_history(name):
-    if request.method == 'GET':
-        from_time = datetime.strptime(request.args['from'], '%Y-%m-%d %H:%M:%S') if 'from' in request.args else datetime.now()-datetime.timedelta(days=1)
-        to_time = datetime.strptime(request.args['to'], '%Y-%m-%d %H:%M:%S') if 'to' in request.args else datetime.now()
-        resolution = int(request.args['resolution']) if 'resolution' in request.args else 20
+    from_time = datetime.strptime(request.args['from'], '%Y-%m-%d %H:%M:%S') if 'from' in request.args else datetime.now()-datetime.timedelta(days=1)
+    to_time = datetime.strptime(request.args['to'], '%Y-%m-%d %H:%M:%S') if 'to' in request.args else datetime.now()
+    resolution = int(request.args['resolution']) if 'resolution' in request.args else 20
 
-        with mydb:
-            sensors = mydb.sensor_history(name, from_time=from_time, to_time=to_time)
-            sensors = sensors[0::int(len(sensors)/resolution)] if len(sensors) > resolution else sensors
-            return jsonify(sensors)
+    with mydb:
+        sensors = mydb.sensor_history(name, from_time=from_time, to_time=to_time)
+        sensors = sensors[0::int(len(sensors)/resolution)] if len(sensors) > resolution else sensors
+        return jsonify(sensors)
     return '', 500
 
 
