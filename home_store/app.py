@@ -6,7 +6,7 @@ from pytils.http import Filter
 from pytils import log, http
 from pytils import config
 from home_store.models import mydb, Sensor
-from home_store.model.encoder import Encoder
+from home_store.models import Encoder
 
 DB_FILE_NAME = 'sensors.db'
 app = Flask(__name__)

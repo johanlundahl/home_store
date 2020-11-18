@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 import os
 import operator
+from flask.json import JSONEncoder
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import extract
 from sqlalchemy_filters import apply_filters
@@ -111,3 +112,13 @@ class Sensor(mydb.Model):
 
     def __repr__(self):
         return 'Sensor({}, {}, {}, {})'.format(self.name, self.temperature, self.humidity, self.timestamp)
+
+
+class Encoder(JSONEncoder):
+    
+    def default(self, o):
+        if any(type(o) is x for x in [Sensor]):
+            return o.to_json()
+        if type(o) is datetime:
+            return o.strftime('%Y-%m-%d %H:%M:%S')    
+        return JSONEncoder.default(self, o)
