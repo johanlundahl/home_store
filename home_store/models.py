@@ -98,6 +98,7 @@ class Sensor(mydb.Model):
 
     def to_json_summary(self):
         return {
+            'id': self.id,
             'name': self.name, 
             'latest': '/api/v2/sensors/{}/latest'.format(self.name), 
             'history': '/api/v2/sensors/{}/history'.format(self.name)

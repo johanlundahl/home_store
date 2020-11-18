@@ -8,13 +8,16 @@ from pytils import config
 from home_store.models import mydb, Sensor
 from home_store.model.encoder import Encoder
 
+DB_FILE_NAME = 'sensors.db'
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///sensors.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///{}'.format(DB_FILE_NAME)
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.json_encoder = Encoder
 mydb.init_app(app)
 
 @app.route('/api/v2', methods=['GET'])
 def root():
+
     return ''
 
 @app.route('/api/v2/status', methods=['GET'])
@@ -22,7 +25,7 @@ def root():
 def status():
     with mydb:
         db_count = mydb.size()
-        db_size = os.path.getsize('home_store/sensors.db')
+        db_size = os.path.getsize('home_store/{}'.format(DB_FILE_NAME))
         oldest = mydb.oldest().timestamp if mydb.oldest() is not None else '' 
         newest = mydb.newest().timestamp if mydb.newest() is not None else ''
         result = {'size': db_size, 'count': db_count, 'oldest': oldest, 'newest': newest}
@@ -42,7 +45,7 @@ def sensors():
     if request.method == 'GET':        
         with mydb:
             sensors = mydb.sensors()
-            result = [{'name': name, 'link': '/api/sensors/{}'.format(name)} for name in sensors]
+            result = [{'name': name, 'href': '/api/sensors/{}'.format(name)} for name in sensors]
             return jsonify(result)
 
 
