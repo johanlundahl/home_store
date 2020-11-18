@@ -4,16 +4,14 @@ from argparse import ArgumentParser
 from datetime import timedelta
 import datetime
 import calendar
-from home_store import db
-from home_store.db import MyDB
-from home_store.model.sensor import Sensor
-
-mydb = MyDB(db.db_uri)
+from home_store.app import app, mydb
+from home_store.models import Sensor
 
 
 def add(sensor):
-    with mydb:
-        mydb.add(sensor)
+    with app.app_context():
+        mydb.session.add(sensor)
+        mydb.session.commit()
 
 def create_sensor(name, date_str):
     temp = create_value()

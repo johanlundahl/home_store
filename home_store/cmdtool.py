@@ -21,7 +21,6 @@ if __name__ == '__main__':
 
 	parser_c = subparsers.add_parser('init', 
 		help='Creates the database file with all its defined tables.')
-	parser_d = subparsers.add_parser('clean', help='Removes the database file.')
 	parser_e = subparsers.add_parser('drop', 
 		help='Removes all entries or for a given sensor.')
 
@@ -51,8 +50,6 @@ if __name__ == '__main__':
 		populate.create_for_period(args.name, args.period, args.count)
 	if args.action == 'init':
 		database.create()
-	if args.action == 'clean':
-		database.delete()
 	if args.action == 'drop':
 		database.drop()
 		
