@@ -35,6 +35,7 @@ def sparse_day(name, date):
     remove_records(records)
 
 def sparse_period(name, period):
+    print('SpARSE', name, period)
     if len(period) == 7:
         year, month = get_int_tuple(period)
         num_days = calendar.monthrange(year, month)[1]

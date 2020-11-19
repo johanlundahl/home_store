@@ -1,5 +1,8 @@
-from home_store.app import mydb
+from home_store.app import app, mydb
 
+def get_sensors():
+	with app.app_context():
+		return mydb.sensors()
 
 def create():
     mydb.create_all()

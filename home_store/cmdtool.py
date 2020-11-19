@@ -1,5 +1,5 @@
 from argparse import ArgumentParser, ArgumentTypeError
-from datetime import datetime
+from datetime import datetime, timedelta
 from home_store.helpers import populate, sparse, database
 
 
@@ -26,11 +26,18 @@ if __name__ == '__main__':
 
 	parser_a = subparsers.add_parser('sparse', 
 		help='Sparse database entries for a given sensor.')
-	parser_a.add_argument('name', 
+	group_name = parser_a.add_mutually_exclusive_group(required=True)
+	group_name.add_argument('-name', 
 		help='Name of the sensor to remove entries for.')
-	parser_a.add_argument('period', type=check_period, 
+	group_name.add_argument('-all', action='store_true')
+	#parser_a.add_argument('period', type=check_period, 
+	#	help='entries will be sparsed from this period, ' \
+	#	'i.e. month (2020-10) of date (2020-10-01')
+	group_period = parser_a.add_mutually_exclusive_group(required=True)
+	group_period.add_argument('-period', type=check_period, 
 		help='entries will be sparsed from this period, ' \
 		'i.e. month (2020-10) of date (2020-10-01')
+	group_period.add_argument('-yesterday', action='store_true')
 
 	parser_b = subparsers.add_parser('populate', 
 		help='Add database entries with random values.')
@@ -45,7 +52,15 @@ if __name__ == '__main__':
 	args = parser.parse_args()
 
 	if args.action == 'sparse':
-		sparse.sparse_period(args.name, args.period)
+		if args.yesterday:
+			yesterday = datetime.now()-timedelta(days=1)
+			args.period = yesterday.strftime('%Y-%m-%d')
+		if args.all:
+			sensors = database.get_sensors()
+			for sensor in sensors:
+				sparse.sparse_period(sensor, args.period)		
+		else:
+			sparse.sparse_period(args.name, args.period)
 	if args.action == 'populate':
 		populate.create_for_period(args.name, args.period, args.count)
 	if args.action == 'init':
