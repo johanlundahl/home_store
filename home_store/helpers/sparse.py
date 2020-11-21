@@ -23,6 +23,7 @@ def remove_records(records):
     with app.app_context():
         for record in records:
             mydb.delete(record)
+            mydb.session.commit()
 
 def get_int_tuple(period):
     year, month = period.split('-')
