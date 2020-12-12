@@ -2,6 +2,7 @@ from datetime import datetime
 import os
 import json
 from flask import Flask, render_template, request, jsonify, url_for
+from flask_cors import CORS
 from pytils.http import Filter
 from pytils import log, http
 from pytils import config
@@ -10,6 +11,7 @@ from home_store.models import Encoder
 
 DB_FILE_NAME = 'sensors.db'
 app = Flask(__name__)
+CORS(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///{}'.format(DB_FILE_NAME)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.json_encoder = Encoder
@@ -85,48 +87,6 @@ def sensor_history_v2(name):
         sensors = mydb.sensor(name, filters=date_filters, offset=offset, limit=limit, sort=sort)
         return jsonify(sensors)
     return 500
-
-
-@app.route('/api/sensors/<name>', methods=['GET'])
-@http.validate_querystrings(method='GET', parameters=['date', 'timestamp', 'offset', 'limit', 'sort'])
-def sensor(name):
-    date_args = Filter.args_matching(request.args, 'date')
-    timestamp_args = Filter.args_matching(request.args, 'timestamp')
-            
-    date_filters = [Filter.from_arg(date, request.args[date], ignore_type=True) for date in date_args]
-    date_filters += [Filter.from_arg(date, request.args[date], ignore_type=False) for date in timestamp_args]
-    
-    offset = int(request.args['offset']) if 'offset' in request.args else 0 
-    limit = int(request.args['limit']) if 'limit' in request.args else 20
-    sort = request.args['sort'] if 'sort' in request.args else 'desc'
-
-    with mydb:
-        date_filters = [a.to_json() for a in date_filters]
-        sensors = mydb.sensor(name, filters=date_filters, offset=offset, limit=limit, sort=sort)
-        return jsonify(sensors)
-    return 500
-
-
-@app.route('/api/sensors/<name>/latest', methods=['GET'])
-@http.validate_querystrings(method='GET', parameters=[])
-def sensor_latest(name):
-    with mydb:
-        sensor = mydb.latest_sensor(name)
-        return jsonify(sensor)
-    return 500
-
-@app.route('/api/sensors/<name>/history', methods=['GET'])
-@http.validate_querystrings(method='GET', parameters=['from', 'to', 'resolution'])
-def sensor_history(name):
-    from_time = datetime.strptime(request.args['from'], '%Y-%m-%d %H:%M:%S') if 'from' in request.args else datetime.now()-datetime.timedelta(days=1)
-    to_time = datetime.strptime(request.args['to'], '%Y-%m-%d %H:%M:%S') if 'to' in request.args else datetime.now()
-    resolution = int(request.args['resolution']) if 'resolution' in request.args else 20
-
-    with mydb:
-        sensors = mydb.sensor_history(name, from_time=from_time, to_time=to_time)
-        sensors = sensors[0::int(len(sensors)/resolution)] if len(sensors) > resolution else sensors
-        return jsonify(sensors)
-    return '', 500
 
 
 if __name__ == '__main__':
