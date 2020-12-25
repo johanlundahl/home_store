@@ -69,6 +69,16 @@ def sensor_latest_v2(name):
         return jsonify(sensor)
     return 500
 
+@app.route('/api/v2/sensors/<name>/min-max', methods=['GET'])
+@http.validate_querystrings(method='GET', parameters=['date'])
+def sensor_high_low_v2(name):
+    with mydb:
+        high = mydb.sensor_max(name, request.args['date'])
+        low = mydb.sensor_min(name, request.args['date'])
+        sensor = {'name': name, 'date': request.args['date'], 'min': low, 'max': high}
+        return jsonify(sensor)
+    return 500
+
 @app.route('/api/v2/sensors/<name>/readings', methods=['GET'])
 @http.validate_querystrings(method='GET', parameters=['date', 'timestamp', 'page', 'page_size', 'sort'])
 def sensor_history_v2(name):

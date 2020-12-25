@@ -3,7 +3,7 @@ import os
 import operator
 from flask.json import JSONEncoder
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import extract
+from sqlalchemy import extract, func
 from sqlalchemy_filters import apply_filters
 
 class MyDB(SQLAlchemy):
@@ -25,7 +25,18 @@ class MyDB(SQLAlchemy):
         query = self.session.query(Sensor).filter_by(name=name)
         for a_filter in filters:
             query = apply_filters(query, a_filter)
+        #query = query.filter(extract('hour', Sensor.timestamp).in_(range(0, 24, 3)))
         return query.order_by(order_by).offset(offset).limit(limit).all()
+
+    def sensor_max(self, name, date):
+        query = self.session.query(Sensor, func.max(Sensor.temperature))
+        query = query.filter(Sensor.date == date)
+        return query.filter_by(name=name).scalar()
+
+    def sensor_min(self, name, date):
+        query = self.session.query(Sensor, func.min(Sensor.temperature))
+        query = query.filter(Sensor.date == date)
+        return query.filter_by(name=name).scalar()
 
     def sensors(self):
         query = self.session.query(Sensor.name.distinct().label('name'))
@@ -107,7 +118,7 @@ class Sensor(mydb.Model):
             'id': self.id,
             'name': self.name, 
             'latest': '/api/v2/sensors/{}/latest'.format(self.name), 
-            'history': '/api/v2/sensors/{}/history'.format(self.name)
+            'history': '/api/v2/sensors/{}/readings'.format(self.name)
         }
 
     def __repr__(self):
