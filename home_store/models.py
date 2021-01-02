@@ -25,7 +25,7 @@ class MyDB(SQLAlchemy):
         query = self.session.query(Sensor).filter_by(name=name)
         for a_filter in filters:
             query = apply_filters(query, a_filter)
-        #query = query.filter(extract('hour', Sensor.timestamp).in_(range(0, 24, 3)))
+        query = query.filter(extract('hour', Sensor.timestamp).in_(range(0, 24, 3)))
         return query.order_by(order_by).offset(offset).limit(limit).all()
 
     def sensor_max(self, name, date):
