@@ -18,7 +18,14 @@ run:
 	python3 -m home_store.app
 
 test:
-	python3 -m unittest tests/test_app.py
+	coverage run -m pytest tests/*_test.py
+
+cov:
+	coverage report
+	coverage html
+
+lint:
+	flake8 --statistics --count
 		
 update:
 	git pull
