@@ -4,6 +4,7 @@ sqlalchemy_filters
 flask_sqlalchemy
 git+https://github.com/johanlundahl/pytils.git
 flask-cors
+flask_testing
 coverage
 pytest
 
