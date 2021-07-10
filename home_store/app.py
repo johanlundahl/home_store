@@ -81,6 +81,7 @@ def sensor_high_low_v2(name):
 
 @app.route('/api/v2/sensors/<name>/readings', methods=['GET'])
 @http.validate_querystrings(method='GET', parameters=['date', 'timestamp', 'page', 'page_size', 'sort'])
+# Add hour parameter which can take multiple values, e.g. hour=0,6,12,18
 def sensor_history_v2(name):
     date_args = Filter.args_matching(request.args, 'date')
     timestamp_args = Filter.args_matching(request.args, 'timestamp')
@@ -94,10 +95,14 @@ def sensor_history_v2(name):
 
     with mydb:
         date_filters = [a.to_json() for a in date_filters]
+        #range(0, 24, 3)
+
         sensors = mydb.sensor(name, filters=date_filters, offset=offset, limit=limit, sort=sort)
         return jsonify(sensors)
     return 500
 
+def calculate_date_range(filters):
+    lower = filters
 
 if __name__ == '__main__':
     try:
