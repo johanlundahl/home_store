@@ -20,12 +20,13 @@ class MyDB(SQLAlchemy):
     def delete(self, item):
         self.session.delete(item)
 
-    def sensor(self, name, filters=[], offset=0, limit=20, sort='desc'):
+    def sensor(self, name, filters=[], offset=0, limit=20, sort='desc', hours=None):
         order_by = self.get_sort_order(sort)
         query = self.session.query(Sensor).filter_by(name=name)
         for a_filter in filters:
             query = apply_filters(query, a_filter)
-        query = query.filter(extract('hour', Sensor.timestamp).in_(range(0, 24, 3)))
+        if hours != None:
+            query = query.filter(extract('hour', Sensor.timestamp).in_(hours))
         return query.order_by(order_by).offset(offset).limit(limit).all()
 
     def sensor_max(self, name, date):
