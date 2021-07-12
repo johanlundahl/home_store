@@ -3,6 +3,7 @@ from flask_testing import TestCase
 from pytils.http import Filter
 from home_store.app import app, mydb, calculate_date_range
 
+
 class IntegrationTest(TestCase):
 
     def create_app(self):
@@ -20,11 +21,13 @@ class IntegrationTest(TestCase):
         mydb.drop_all()
 
     def test_root(self):
-        response = self.client.get('/api/v2', headers={"Content-Type": "application/json"})
+        content_type = {"Content-Type": "application/json"}
+        response = self.client.get('/api/v2', headers=content_type)
         self.assertEqual(200, response.status_code)
-        
+
     def test_status(self):
-        response = self.client.get('/api/v2/status', headers={"Content-Type": "application/json"})
+        content_type = {"Content-Type": "application/json"}
+        response = self.client.get('/api/v2/status', headers=content_type)
         self.assertEqual(200, response.status_code)
         self.assertIn('size', response.json)
         self.assertIn('count', response.json)
@@ -101,28 +104,28 @@ class IntegrationTest(TestCase):
             "humidity": 70,
             "timestamp": "2020-11-20 13:17:03"
         }
-        first = self.client.post('/api/v2/sensors', json=data)
+        self.client.post('/api/v2/sensors', json=data)
         data = {
             "name": "garage",
             "temperature": 20,
             "humidity": 80,
             "timestamp": "2020-11-21 13:17:03"
         }
-        second = self.client.post('/api/v2/sensors', json=data)
+        self.client.post('/api/v2/sensors', json=data)
         data = {
             "name": "garage",
             "temperature": 20,
             "humidity": 80,
             "timestamp": "2020-11-20 14:20:03"
         }
-        third = self.client.post('/api/v2/sensors', json=data)
+        self.client.post('/api/v2/sensors', json=data)
         response = self.client.get('/api/v2/sensors/garage/latest')
         self.assertEqual('2020-11-21 13:17:03', response.json['timestamp'])
-        
+
     def test_sensor_latest_with_wrong_querystring(self):
         response = self.client.get('/api/v2/sensors/garage/latest?page_size')
         self.assertEqual(400, response.status_code)
-        
+
     def test_get_sensor_readings(self):
         data = {
             "name": "garage",
@@ -130,7 +133,7 @@ class IntegrationTest(TestCase):
             "humidity": 70,
             "timestamp": "2020-11-20 13:17:03"
         }
-        first = self.client.post('/api/v2/sensors', json=data)
+        self.client.post('/api/v2/sensors', json=data)
         response = self.client.get('/api/v2/sensors/garage/readings')
         self.assertEqual(1, len(response.json))
         data = {
@@ -139,14 +142,14 @@ class IntegrationTest(TestCase):
             "humidity": 7,
             "timestamp": "2020-11-20 14:05:03"
         }
-        first = self.client.post('/api/v2/sensors', json=data)
+        self.client.post('/api/v2/sensors', json=data)
         response = self.client.get('/api/v2/sensors/garage/readings')
         self.assertEqual(2, len(response.json))
 
     def test_calculate_date_range_lower_limit(self):
         lower = Filter('date', 'gt', '2020-10-01')
-        nbr = calculate_date_range([lower])
-        
+        calculate_date_range([lower])
+
 
 if __name__ == '__main__':
     unittest.main()
