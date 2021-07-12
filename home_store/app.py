@@ -29,7 +29,8 @@ def root():
 def status():
     with mydb:
         db_count = mydb.size()
-        db_size = os.path.getsize('home_store/{}'.format(DB_FILE_NAME))
+        file = 'home_store/{}'.format(DB_FILE_NAME)
+        db_size = os.path.getsize(file) if os.path.exists(file) else -1
         oldest = mydb.oldest().timestamp if mydb.oldest() is not None else ''
         newest = mydb.newest().timestamp if mydb.newest() is not None else ''
         result = {'size': db_size, 'count': db_count,
