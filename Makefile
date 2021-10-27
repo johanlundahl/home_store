@@ -18,7 +18,7 @@ run:
 	python3 -m home_store.app
 
 test:
-	coverage run -m pytest tests/*_test.py
+	coverage run --source=. -m pytest tests/*_test.py
 
 cov:
 	coverage report
