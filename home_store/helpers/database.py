@@ -7,8 +7,10 @@ def get_sensors():
 
 
 def create():
-    mydb.create_all()
+    with app.app_context():
+        mydb.create_all()
 
 
 def drop():
-    mydb.drop_all()
+    with app.app_context():
+        mydb.drop_all()
