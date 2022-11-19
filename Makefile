@@ -19,10 +19,8 @@ run:
 
 test:
 	coverage run --source=. -m pytest tests/*_test.py
-
-cov:
 	coverage report
-	coverage html
+	coveralls
 
 lint:
 	flake8 --statistics --count
