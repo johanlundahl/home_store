@@ -20,6 +20,7 @@ run:
 test:
 	coverage run --source=. -m pytest tests/*_test.py
 	coverage report
+	coverage html
 	coveralls
 
 lint:
