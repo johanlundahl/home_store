@@ -1,5 +1,6 @@
 [![lint](https://github.com/johanlundahl/home_store/actions/workflows/lint.yml/badge.svg)](https://github.com/johanlundahl/home_store/actions/workflows/lint.yml)
 [![Test](https://github.com/johanlundahl/home_store/actions/workflows/test.yml/badge.svg)](https://github.com/johanlundahl/home_store/actions/workflows/test.yml)
+[![Coverage](https://coveralls.io/repos/github/johanlundahl/home_store/badge.svg?branch=master)](https://coveralls.io/github/johanlundahl/home_store?branch=master)
 
 # Home Store
 This project stores sensor reading values to a database. Other components can interact with this component through REST endpoints.
