@@ -71,5 +71,6 @@ class TestMyDB(TestCase):
             self.assertEqual(len(panels), 1)
             self.assertEqual(panels[0].energy, 14)
 
+
 if __name__ == '__main__':
     unittest.main()
