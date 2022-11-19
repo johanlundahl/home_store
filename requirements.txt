@@ -7,4 +7,4 @@ flask-cors
 flask_testing
 coverage
 pytest
-
+coveralls
