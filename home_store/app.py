@@ -4,7 +4,7 @@ from flask_cors import CORS
 from pytils.http import Filter
 from pytils import log, http
 from pytils import config
-from home_store.models import mydb, Sensor
+from home_store.models import mydb, Sensor, Panel
 from home_store.models import Encoder
 
 
@@ -112,6 +112,62 @@ def sensor_history_v2(name):
                               limit=limit, sort=sort)
         return jsonify(sensors)
     return 500
+
+
+@app.route('/api/v2/panels', methods=['POST', 'GET'])
+@http.validate_querystrings(method='GET')
+def panels():
+    if request.method == 'POST':
+        content = request.get_json()
+        if Panel.valid_create(content):
+            with mydb:
+                panel = mydb.add(Panel.create(content))
+                return jsonify(panel.to_json())
+        else:
+            return 'All required parameters were not received.', 400
+
+    if request.method == 'GET':
+        with mydb:
+            panels = mydb.panels()
+            result = [{'id': x, 'href': f'/api/v2/panels/{x}'}
+                      for x in panels]
+            return jsonify(result)
+
+
+@app.route('/api/v2/panels/<id>', methods=['GET'])
+@http.validate_querystrings(method='GET', parameters=['date', 'timestamp',
+                            'page', 'page_size', 'sort'])
+def panel(id):
+    # filter options and return all latest...
+    args = request.args
+    date_args = Filter.args_matching(args, 'date')
+    timestamp_args = Filter.args_matching(args, 'timestamp')
+    date_filters = [get_arg(args, d, True) for d in date_args]
+    date_filters += [get_arg(args, d, False) for d in timestamp_args]
+
+    offset = int(args['page']) if 'page' in args else 0
+    limit = int(args['page_size']) if 'page_size' in args else 20
+    sort = request.args['sort'] if 'sort' in args else 'desc'
+
+    if request.method == 'GET':
+        with mydb:
+            panel = mydb.panel(id, filters=date_filters, offset=offset,
+                               limit=limit, sort=sort)
+            if panel is not None:
+                return jsonify(panel)
+            else:
+                return '', 404
+
+
+@app.route('/api/v2/panels/<id>/latest', methods=['GET'])
+def panel_latest(id):
+    if request.method == 'GET':
+        with mydb:
+            panel = mydb.panel_latest(id)
+            if panel is not None:
+                return jsonify(panel.to_json())
+            else:
+                return '', 404
 
 
 def get_arg(args, arg, ignore_type):
