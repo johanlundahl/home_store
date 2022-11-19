@@ -34,7 +34,26 @@ class TestMyDB(TestCase):
             self.assertEqual(sensor, db_sensor)
 
     def test_sensor_max(self):
-        pass
+        with mydb:
+            sensor = Sensor('abc', 12, 80, datetime.now())
+            mydb.add(sensor)
+            mydb.add(Sensor('abc', 10, 10, datetime.now()))
+            mydb.add(Sensor('abc', 45, 30, datetime.now()))
+            mydb.add(Sensor('abc', 35, 90, datetime.now()))
+
+            max = mydb.sensor_max(sensor.name, sensor.date)
+            self.assertEqual(max.temperature, 45)
+
+    def test_sensor_min(self):
+        with mydb:
+            sensor = Sensor('abc', 12, 80, datetime.now())
+            mydb.add(sensor)
+            mydb.add(Sensor('abc', 10, 10, datetime.now()))
+            mydb.add(Sensor('abc', 45, 30, datetime.now()))
+            mydb.add(Sensor('abc', 35, 90, datetime.now()))
+
+            min = mydb.sensor_min(sensor.name, sensor.date)
+            self.assertEqual(min.temperature, 10)
 
     def test_sensors_something_something(self):
         pass
