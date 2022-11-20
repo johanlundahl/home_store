@@ -26,6 +26,21 @@ class TestMyDB(TestCase):
             sensors = mydb.sensors()
             self.assertTrue(len(sensors) == 0)
 
+    def test_delete(self):
+        s1 = Sensor('one', 1, 2, datetime.now())
+        s2 = Sensor('two', 2, 4, datetime.now())
+        s3 = Sensor('three', 3, 6, datetime.now())
+        with mydb:
+            mydb.add(s1)
+            mydb.add(s2)
+            mydb.add(s3)
+        with mydb:
+            sensor = mydb.sensor('one')
+            self.assertTrue(sensor)
+            mydb.delete(s1)
+            sensor = mydb.sensor('one')
+            self.assertFalse(sensor)
+
     def test_add_a_sensor(self):
         sensor = Sensor('fake', 12.0, 55.5, datetime.now())
         with mydb:
@@ -89,6 +104,15 @@ class TestMyDB(TestCase):
             panels = mydb.panel(21, limit=1, sort='desc')
             self.assertEqual(len(panels), 1)
             self.assertEqual(panels[0].energy, 14)
+
+    def test_panel_lastest(self):
+        with mydb:
+            mydb.add(Panel(21, 'tmp', 12, True, 25))
+            mydb.add(Panel(21, 'tmp', 13, True, 30))
+            mydb.add(Panel(21, 'tmp', 14, False, 35))
+            mydb.add(Panel(22, 'tmp', 15, False, 40))
+            latest = mydb.panel_latest(21)
+            self.assertEqual(latest.energy, 14)
 
 
 if __name__ == '__main__':
