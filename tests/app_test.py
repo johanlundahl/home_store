@@ -43,7 +43,7 @@ class IntegrationTest(TestCase):
             "humidity": 50,
             "timestamp": "2020-11-20 11:14:03"
         }
-        response = self.client.post('/api/v2/sensors', json=data)
+        response = self.client.post('/api/v2/sensors', data=data)
         response = self.client.get('/api/v2/sensors')
         self.assertEqual(200, response.status_code)
         response = self.client.get('/api/v2/sensors/indoor')
@@ -56,14 +56,14 @@ class IntegrationTest(TestCase):
             "humidity": 50,
             "timestamp": "2020-11-20 11:14:03"
         }
-        self.client.post('/api/v2/sensors', json=data)
+        self.client.post('/api/v2/sensors', data=data)
         data = {
             "name": "outdoor",
             "temperature": 5,
             "humidity": 65,
             "timestamp": "2020-11-20 11:14:03"
         }
-        self.client.post('/api/v2/sensors', json=data)
+        self.client.post('/api/v2/sensors', data=data)
         response = self.client.get('/api/v2/sensors')
         result = [x['name'] in ['outdoor', 'indoor'] for x in response.json]
         self.assertTrue(all(result))
@@ -75,7 +75,7 @@ class IntegrationTest(TestCase):
             "humidity": 57,
             "timestamp": "2020-11-17 11:14:03"
         }
-        response = self.client.post('/api/v2/sensors', json=data)
+        response = self.client.post('/api/v2/sensors', data=data)
         self.assertEqual(200, response.status_code)
         self.assertEqual('basement', response.json['name'])
         self.assertEqual('2020-11-17 11:14:03', response.json['timestamp'])
@@ -87,7 +87,7 @@ class IntegrationTest(TestCase):
             "humidity": 70,
             "timestamp": "2020-11-20 13:17:03"
         }
-        response = self.client.post('/api/v2/sensors', json=data)
+        response = self.client.post('/api/v2/sensors', data=data)
         response = self.client.get('/api/v2/sensors/outdoor')
         self.assertEqual(200, response.status_code)
         self.assertEqual('outdoor', response.json['name'])
@@ -104,21 +104,21 @@ class IntegrationTest(TestCase):
             "humidity": 70,
             "timestamp": "2020-11-20 13:17:03"
         }
-        self.client.post('/api/v2/sensors', json=data)
+        self.client.post('/api/v2/sensors', data=data)
         data = {
             "name": "garage",
             "temperature": 20,
             "humidity": 80,
             "timestamp": "2020-11-21 13:17:03"
         }
-        self.client.post('/api/v2/sensors', json=data)
+        self.client.post('/api/v2/sensors', data=data)
         data = {
             "name": "garage",
             "temperature": 20,
             "humidity": 80,
             "timestamp": "2020-11-20 14:20:03"
         }
-        self.client.post('/api/v2/sensors', json=data)
+        self.client.post('/api/v2/sensors', data=data)
         response = self.client.get('/api/v2/sensors/garage/latest')
         self.assertEqual('2020-11-21 13:17:03', response.json['timestamp'])
 
@@ -133,8 +133,10 @@ class IntegrationTest(TestCase):
             "humidity": 70,
             "timestamp": "2020-11-20 13:17:03"
         }
-        self.client.post('/api/v2/sensors', json=data)
+        post_response = self.client.post('/api/v2/sensors', data=data)
+        self.assertEqual(200, post_response.status_code)
         response = self.client.get('/api/v2/sensors/garage/readings')
+        self.assertEqual(200, response.status_code)
         self.assertEqual(1, len(response.json))
         data = {
             "name": "garage",
@@ -142,7 +144,7 @@ class IntegrationTest(TestCase):
             "humidity": 7,
             "timestamp": "2020-11-20 14:05:03"
         }
-        self.client.post('/api/v2/sensors', json=data)
+        self.client.post('/api/v2/sensors', data=data)
         response = self.client.get('/api/v2/sensors/garage/readings')
         self.assertEqual(2, len(response.json))
 
