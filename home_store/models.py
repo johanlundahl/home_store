@@ -3,6 +3,7 @@ from flask.json import JSONEncoder
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import extract, func
 from sqlalchemy_filters import apply_filters
+from flask.json.provider import JSONProvider
 
 
 class MyDB(SQLAlchemy):
@@ -213,3 +214,17 @@ class Encoder(JSONEncoder):
         if type(o) is datetime:
             return o.strftime('%Y-%m-%d %H:%M:%S')
         return JSONEncoder.default(self, o)
+
+
+# https://github.com/pallets/flask/pull/4692
+class MyJSONProvider(JSONProvider):
+    
+    def dumps(self, obj, *, option=None, **kwargs):
+        if any(type(obj) is x for x in [Sensor, Panel]):
+            return obj.to_json()
+        if type(obj) is datetime:
+            return obj.strftime('%Y-%m-%d %H:%M:%S')
+        return json.dumps(obj)
+
+    def loads(self, s, **kwargs):
+        return None
