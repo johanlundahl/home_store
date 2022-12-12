@@ -2,10 +2,12 @@ import os
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from pytils.http import Filter
-from pytils import log, http
-from pytils import config
+from pytils import http
+import pytils.logging  # noqa: F401
+import logging
+from home_store.config import Config
 from home_store.models import mydb, Sensor, Panel
-from home_store.models import Encoder
+from home_store.models import Encoder, MyJSONProvider   # noqa: F401
 
 
 DB_FILE_NAME = 'sensors.db'
@@ -14,6 +16,7 @@ CORS(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///{}'.format(DB_FILE_NAME)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.json_encoder = Encoder
+# app.json = MyJSONProvider(app)
 mydb.init_app(app)
 
 
@@ -181,8 +184,8 @@ def calculate_date_range(filters):
 
 if __name__ == '__main__':
     try:
-        log.init()
-        cfg = config.init()
+        cfg = Config.init()
         app.run(host=cfg.server.address, port=cfg.server.port)
+
     except Exception:
-        log.exception('Application Exception')
+        logging.exception('Application Exception')
