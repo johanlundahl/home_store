@@ -219,7 +219,7 @@ class Encoder(JSONEncoder):
 
 # https://github.com/pallets/flask/pull/4692
 class MyJSONProvider(JSONProvider):
-    
+
     def dumps(self, obj, *, option=None, **kwargs):
         if any(type(obj) is x for x in [Sensor, Panel]):
             return obj.to_json()
@@ -228,4 +228,5 @@ class MyJSONProvider(JSONProvider):
         return json.dumps(obj)
 
     def loads(self, s, **kwargs):
+        # return s
         return None
