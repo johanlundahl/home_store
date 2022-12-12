@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import extract, func
 from sqlalchemy_filters import apply_filters
 from flask.json.provider import JSONProvider
+import json
 
 
 class MyDB(SQLAlchemy):
