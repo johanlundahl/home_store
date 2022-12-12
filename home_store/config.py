@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from home_store.config import Configuration
+from pytils.config import Configuration
 
 
 @dataclass
