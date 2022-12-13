@@ -90,6 +90,16 @@ class IntegrationTest(TestCase):
         self.assertEqual('basement', response.json['name'])
         self.assertEqual('2020-11-17 11:14:03', response.json['timestamp'])
 
+    def test_add_sensor_without_all_required_arguments(self):
+        data = {
+            "name": "basement",
+            "humidity": 57,
+            "timestamp": "2020-11-17 11:14:03"
+        }
+        response = self.client.post('/api/v2/sensors', data=json.dumps(data),
+                                    content_type='application/json')
+        self.assertEqual(400, response.status_code)
+
     def test_get_a_sensor(self):
         data = {
             "name": "outdoor",
