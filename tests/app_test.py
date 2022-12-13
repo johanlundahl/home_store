@@ -216,6 +216,114 @@ class IntegrationTest(TestCase):
         lower = Filter('date', 'gt', '2020-10-01')
         calculate_date_range([lower])
 
+    def test_get_panel(self):
+        data = {
+            "id": 123,
+            "name": "abc",
+            "energy": 10,
+            "alarm_state": True,
+            "efficiency": 50
+        }
+        response = self.client.post('/api/v2/panels', data=json.dumps(data),
+                                    content_type='application/json')
+        response = self.client.get('/api/v2/panels/123')
+        self.assertTrue(len(response.json) > 0)
+
+    def test_get_panel_for_non_existing_panel(self):
+        response = self.client.get('/api/v2/panels/123123123')
+        self.assertEqual(response.status_code, 404)
+
+    def test_add_panel_with_incomplete_parameters(self):
+        data = {
+            "id": 123,
+            "name": "abc",
+            "alarm_state": True,
+            "efficiency": 50
+        }
+        response = self.client.post('/api/v2/panels', data=json.dumps(data),
+                                    content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+
+    def test_get_panels(self):
+        data = {
+            "id": 123,
+            "name": "abc",
+            "energy": 10,
+            "alarm_state": True,
+            "efficiency": 50
+        }
+        response = self.client.post('/api/v2/panels', data=json.dumps(data),
+                                    content_type='application/json')
+        data = {
+            "id": 123,
+            "name": "abc",
+            "energy": 20,
+            "alarm_state": True,
+            "efficiency": 60
+        }
+        response = self.client.post('/api/v2/panels', data=json.dumps(data),
+                                    content_type='application/json')
+        data = {
+            "id": 124,
+            "name": "abc",
+            "energy": 30,
+            "alarm_state": True,
+            "efficiency": 70
+        }
+        response = self.client.post('/api/v2/panels', data=json.dumps(data),
+                                    content_type='application/json')
+
+        response = self.client.get('/api/v2/panels')
+        self.assertEqual(len(response.json), 2)
+
+    def test_add_panel(self):
+        data = {
+            "id": 2345,
+            "name": "abc",
+            "energy": 10,
+            "alarm_state": True,
+            "efficiency": 50
+        }
+        response = self.client.post('/api/v2/panels', data=json.dumps(data),
+                                    content_type='application/json')
+        self.assertEqual(response.status_code, 200)
+        
+    def test_get_panel_latest(self):
+        data = {
+            "id": 25,
+            "name": "abc",
+            "energy": 10,
+            "alarm_state": True,
+            "efficiency": 50
+        }
+        response = self.client.post('/api/v2/panels', data=json.dumps(data),
+                                    content_type='application/json')
+        data = {
+            "id": 25,
+            "name": "abc",
+            "energy": 20,
+            "alarm_state": True,
+            "efficiency": 60
+        }
+        response = self.client.post('/api/v2/panels', data=json.dumps(data),
+                                    content_type='application/json')
+        data = {
+            "id": 25,
+            "name": "abc",
+            "energy": 30,
+            "alarm_state": True,
+            "efficiency": 70
+        }
+        response = self.client.post('/api/v2/panels', data=json.dumps(data),
+                                    content_type='application/json')
+
+        response = self.client.get('/api/v2/panels/25/latest')
+        self.assertEqual(response.json['energy'], 30)
+
+    def test_get_panel_latest_for_non_existing_panel(self):
+        response = self.client.get('/api/v2/panels/123123123/latest')
+        self.assertEqual(response.status_code, 404)
+        
 
 if __name__ == '__main__':
     unittest.main()
