@@ -287,7 +287,7 @@ class IntegrationTest(TestCase):
         response = self.client.post('/api/v2/panels', data=json.dumps(data),
                                     content_type='application/json')
         self.assertEqual(response.status_code, 200)
-        
+
     def test_get_panel_latest(self):
         data = {
             "id": 25,
@@ -323,7 +323,7 @@ class IntegrationTest(TestCase):
     def test_get_panel_latest_for_non_existing_panel(self):
         response = self.client.get('/api/v2/panels/123123123/latest')
         self.assertEqual(response.status_code, 404)
-        
+
 
 if __name__ == '__main__':
     unittest.main()
