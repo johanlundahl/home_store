@@ -156,7 +156,7 @@ def panel(id):
         with mydb:
             panel = mydb.panel(id, filters=date_filters, offset=offset,
                                limit=limit, sort=sort)
-            if panel is not None:
+            if len(panel) > 0:
                 return jsonify(panel)
             else:
                 return '', 404
