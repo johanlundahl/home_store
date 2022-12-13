@@ -148,6 +148,41 @@ class IntegrationTest(TestCase):
         resp = json.loads(response.data)
         self.assertEqual('2020-11-21 13:17:03', resp['timestamp'])
 
+    def test_sensor_min_max(self):
+        data = {
+            "name": "bedroom",
+            "temperature": 10,
+            "humidity": 70,
+            "timestamp": "2022-12-13 13:17:03"
+        }
+        resp = self.client.post('/api/v2/sensors', data=json.dumps(data),
+                                content_type='application/json')
+        self.assertEqual(resp.status_code, 200)
+        data = {
+            "name": "bedroom",
+            "temperature": 11,
+            "humidity": 50,
+            "timestamp": "2022-12-13 11:20:03"
+        }
+        resp = self.client.post('/api/v2/sensors', data=json.dumps(data),
+                                content_type='application/json')
+        self.assertEqual(resp.status_code, 200)
+        data = {
+            "name": "bedroom",
+            "temperature": 9,
+            "humidity": 80,
+            "timestamp": "2022-12-13 13:19:03"
+        }
+        resp = self.client.post('/api/v2/sensors', data=json.dumps(data),
+                                content_type='application/json')
+        self.assertEqual(resp.status_code, 200)
+        url = '/api/v2/sensors/bedroom/min-max?date=2022-12-13'
+        response = self.client.get(url)
+        resp = json.loads(response.data)
+        print('*** MIN-MAX ***', resp)
+        self.assertEqual(11.0, resp['max']['temperature'])
+        self.assertEqual(9.0, resp['min']['temperature'])
+
     def test_sensor_latest_with_wrong_querystring(self):
         response = self.client.get('/api/v2/sensors/garage/latest?page_size')
         self.assertEqual(400, response.status_code)
