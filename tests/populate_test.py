@@ -20,5 +20,6 @@ class PopulateTest(unittest.TestCase):
         self.assertEqual(year, 2022)
         self.assertEqual(month, 9)
 
+
 if __name__ == '__main__':
     unittest.main()
