@@ -1,10 +1,7 @@
 from datetime import datetime, timedelta
-from flask.json import JSONEncoder
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import extract, func
 from sqlalchemy_filters import apply_filters
-from flask.json.provider import JSONProvider
-import json
 
 
 class MyDB(SQLAlchemy):
@@ -211,23 +208,3 @@ class Panel(mydb.Model):
     def __repr__(self):
         return (f'Panel({self.id}, {self.name}, '
                 f'{self.energy}, {self.timestamp})')
-
-
-class Encoder(JSONEncoder):
-
-    def default(self, o):
-        if any(type(o) is x for x in [Sensor, Panel]):
-            print('*** JSONEncoder ***', type(o))
-            return o.to_json()
-        if type(o) is datetime:
-            return o.strftime('%Y-%m-%d %H:%M:%S')
-        return JSONEncoder.default(self, o)
-
-
-# https://github.com/pallets/flask/pull/4692
-class MyJSONProvider(JSONProvider):
-
-    def dumps(self, obj, **kwargs):
-        if type(obj) is datetime:
-            return obj.strftime('%Y-%m-%d %H:%M:%S')
-        return json.dumps(obj)

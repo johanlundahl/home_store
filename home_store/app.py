@@ -7,7 +7,6 @@ import pytils.logging  # noqa: F401
 import logging
 from home_store.config import Config
 from home_store.models import mydb, Sensor, Panel
-from home_store.models import Encoder, MyJSONProvider   # noqa: F401
 
 
 DB_FILE_NAME = 'sensors.db'
