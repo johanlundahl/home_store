@@ -176,11 +176,6 @@ def get_arg(args, arg, ignore_type):
     return Filter.from_arg(arg, args[arg], ignore_type)
 
 
-def calculate_date_range(filters):
-    lower = filters
-    return lower
-
-
 if __name__ == '__main__':
     try:
         cfg = Config.init()

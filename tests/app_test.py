@@ -1,7 +1,6 @@
 import unittest
 from flask_testing import TestCase
-from pytils.http import Filter
-from home_store.app import app, mydb, calculate_date_range
+from home_store.app import app, mydb
 import json
 
 
@@ -211,10 +210,6 @@ class IntegrationTest(TestCase):
                          content_type='application/json')
         response = self.client.get('/api/v2/sensors/garage/readings')
         self.assertEqual(2, len(response.json))
-
-    def test_calculate_date_range_lower_limit(self):
-        lower = Filter('date', 'gt', '2020-10-01')
-        calculate_date_range([lower])
 
     def test_get_panel(self):
         data = {
