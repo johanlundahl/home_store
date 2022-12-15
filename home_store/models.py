@@ -139,8 +139,10 @@ class Sensor(mydb.Model):
         )
 
     def to_json(self):
-        result = {**{k: v for k, v in self.__dict__.items()}}
-        del result['_sa_instance_state']
+        result = {'name': self.name,
+                  'temperature': self.temperature,
+                  'humidity': self.humidity,
+                  'timestamp': self.timestamp.strftime('%Y-%m-%d %H:%M:%S')}
         return result
 
     def to_json_summary(self):
@@ -191,8 +193,12 @@ class Panel(mydb.Model):
         )
 
     def to_json(self):
-        result = {**{k: v for k, v in self.__dict__.items()}}
-        del result['_sa_instance_state']
+        result = {'panel_id': self.panel_id,
+                  'name': self.name,
+                  'energy': self.energy,
+                  'alarm_state': self.alarm_state,
+                  'efficiency': self.efficiency,
+                  'timestamp': self.timestamp.strftime('%Y-%m-%d %H:%M:%S')}
         return result
 
     def to_json_summary(self):
@@ -211,6 +217,7 @@ class Encoder(JSONEncoder):
 
     def default(self, o):
         if any(type(o) is x for x in [Sensor, Panel]):
+            print('*** JSONEncoder ***', type(o))
             return o.to_json()
         if type(o) is datetime:
             return o.strftime('%Y-%m-%d %H:%M:%S')
@@ -220,13 +227,7 @@ class Encoder(JSONEncoder):
 # https://github.com/pallets/flask/pull/4692
 class MyJSONProvider(JSONProvider):
 
-    def dumps(self, obj, *, option=None, **kwargs):
-        if any(type(obj) is x for x in [Sensor, Panel]):
-            return obj.to_json()
+    def dumps(self, obj, **kwargs):
         if type(obj) is datetime:
             return obj.strftime('%Y-%m-%d %H:%M:%S')
         return json.dumps(obj)
-
-    def loads(self, s, **kwargs):
-        # return s
-        return None

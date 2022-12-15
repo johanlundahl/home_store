@@ -15,8 +15,6 @@ app = Flask(__name__)
 CORS(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///{}'.format(DB_FILE_NAME)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.json_encoder = Encoder
-# app.json = MyJSONProvider(app)
 mydb.init_app(app)
 
 
@@ -76,7 +74,7 @@ def sensor_v2(name):
 def sensor_latest_v2(name):
     with mydb:
         sensor = mydb.latest_sensor(name)
-        return jsonify(sensor)
+        return jsonify(sensor.to_json())
     return 500
 
 
@@ -87,7 +85,7 @@ def sensor_high_low_v2(name):
         high = mydb.sensor_max(name, request.args['date'])
         low = mydb.sensor_min(name, request.args['date'])
         sensor = {'name': name, 'date': request.args['date'],
-                  'min': low, 'max': high}
+                  'min': low.to_json(), 'max': high.to_json()}
         return jsonify(sensor)
     return 500
 
@@ -113,6 +111,7 @@ def sensor_history_v2(name):
 
         sensors = mydb.sensor(name, filters=date_filters, offset=offset,
                               limit=limit, sort=sort)
+        sensors = [s.to_json() for s in sensors]
         return jsonify(sensors)
     return 500
 
@@ -154,10 +153,11 @@ def panel(id):
 
     if request.method == 'GET':
         with mydb:
-            panel = mydb.panel(id, filters=date_filters, offset=offset,
-                               limit=limit, sort=sort)
-            if len(panel) > 0:
-                return jsonify(panel)
+            panels = mydb.panel(id, filters=date_filters, offset=offset,
+                                limit=limit, sort=sort)
+            if len(panels) > 0:
+                panels = [p.to_json() for p in panels]
+                return jsonify(panels)
             else:
                 return '', 404
 
