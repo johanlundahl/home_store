@@ -20,7 +20,7 @@ def sparse_records(records):
 
 
 def remove_records(records):
-    with app.app_context():
+    with mydb:
         for record in records:
             mydb.delete(record)
             mydb.session.commit()
