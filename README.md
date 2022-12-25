@@ -352,11 +352,12 @@ POST /api/v2/panels HTTP/1.1
 ```
 
 Example request:
-```json
+```
 POST /api/v2/panels HTTP/1.1
 Host: localhost:5000
 Content-Type: application/json
-
+```
+```json
 {
     "name": "panel 1.2.3",
     "id": 123456,
@@ -382,7 +383,7 @@ Possible errors:
 | 400           | Any of the required parameters are missing.   |
 
 ### Get panel values
-
+    
 
 ### Get latest panel values
 
