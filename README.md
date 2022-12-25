@@ -346,8 +346,43 @@ Example response:
 ```
 
 ### Add panel
+Use to add a new panel value:
+```
+POST /api/v2/panels HTTP/1.1
+```
+
+Example request:
+```json
+POST /api/v2/panels HTTP/1.1
+Host: localhost:5000
+Content-Type: application/json
+
+{
+    "name": "panel 1.2.3",
+    "id": 123456,
+    "energy": 57,
+    "alarm_state": true,
+    "efficiency": 75
+}
+```
+Where the parameters are described as:
+
+| Parameter     | Type          | Required? | Description   |
+| ------------- | ------------- | -----     | ---           |
+| `name`        | string        | required  | Name of the panel to add a value for. |
+| `id`          | int           | required  | The id of the panel. |
+| `energy`      | int           | required  | Energy produced by the panel in Wh. |
+| `alarm_state` | boolean       | required  | Whether the panel is in alarm state or not. |
+| `efficiency`  | int           | required  | The production level in % compared to the best producing panel. |
+
+Possible errors:
+
+| Error code    | Description   |
+| ------------- | -----------   |
+| 400           | Any of the required parameters are missing.   |
 
 ### Get panel values
+
 
 ### Get latest panel values
 
