@@ -95,7 +95,7 @@ GET /api/v2/status HTTP/1.1
 
 Example request:
 ```
-GET /api/sensors HTTP/1.1
+GET /api/v2/sensors HTTP/1.1
 Host: localhost:5000
 Content-Type: application/json
 ```
@@ -206,7 +206,7 @@ Possible errors:
 ### Get sensor values
 Use the following to get sensor values for a sensor:
 ```
-GET /api/sensors/<name> HTTP/1.1
+GET /api/v2/sensors/<name> HTTP/1.1
 ```
 By default the 20 latest sensor values are returned, i.e. the same as `offset=0&limit=20`.
 
@@ -222,7 +222,7 @@ Both the `date` and the `timestamp` attributes can have an operator added to it.
 
 Example request:
 ```
-GET /api/sensors/basement?date[gt]=2019-12-26 HTTP/1.1
+GET /api/v2/sensors/basement?date[gt]=2019-12-26 HTTP/1.1
 Host: localhost:5000
 Content-Type: application/json
 ``` 
@@ -271,12 +271,12 @@ Possible errors:
 ### Get latest sensor value
 Use the following to get the latest sensor value for <name> as per its datetime attribute:
 ```
-GET /api/sensors/<name>/latest HTTP/1.1
+GET /api/v2/sensors/<name>/latest HTTP/1.1
 ```
 
 Example request:
 ```
-GET /api/sensors/basement/latest HTTP/1.1
+GET /api/v2/sensors/basement/latest HTTP/1.1
 Host: localhost:5000
 Content-Type: application/json
 ```
@@ -314,7 +314,7 @@ Possible errors:
 ### Get sensor history
 This endpoint will return historical sensor values. Use the `to` and `from` attributes to specify the time period. 
 ```
-GET /api/sensors/<name>/history HTTP/1.1 
+GET /api/v2/sensors/<name>/history HTTP/1.1 
 ```
 
 | Parameter     | Type          | Required? | Description   |
@@ -447,5 +447,45 @@ Possible errors:
 | 400           | Any of the querystring parameters are not valid.  |
 
 ### Get latest panel values
+Get the latest panel value for <id> as per its datetime attribute:
+```
+GET /api/v2/panels/<id>/latest HTTP/1.1
+```
+
+Example request:
+```
+GET /api/v2/panels/123456/latest HTTP/1.1
+Host: localhost:5000
+Content-Type: application/json
+```
+
+Example response:
+``` json
+{
+    "alarm_state": false,
+    "efficiency": 51.0,
+    "energy": 30.0,
+    "name": "panel 1.2.4",
+    "panel_id": 123456,
+    "timestamp": "2022-12-13 19:55:34"}
+```
+
+Where the parameters in the response are described as:
+
+| Parameter     | Type          | Description   |
+| ------------- | ------------- | ---           |
+| `alarm_state` | boolean       | Whether the panel is in alarm state or not.  |
+| `efficiency`  | real          | The production level in % compared to the best producing panel. |
+| `energy`      | real          | The amount of produced energy of the panel. |
+| `name`        | string        | Name of the panel. |
+| `panel_id`    | int           | The id of the panel. |
+| `timestamp`   | string        | The date and time of when the value was measured. |
+
+Possible errors:
+
+| Error code    | Description   |
+| ------------- | -----------   |
+| 404           | The panel was not found.  |
+
 
 
