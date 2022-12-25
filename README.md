@@ -325,6 +325,25 @@ GET /api/sensors/<name>/history HTTP/1.1
 
 
 ### Get panels
+Lists all panels.
+```
+GET /api/v2/panels HTTP/1.1 
+```
+
+Example response:
+``` json
+[
+    {
+        "href": "/api/v2/panels/123456",
+        "id":123456
+    },
+    {
+        "href": "/api/v2/panels/123457",
+        "id":123457
+    }
+]
+
+```
 
 ### Add panel
 
