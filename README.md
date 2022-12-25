@@ -178,7 +178,8 @@ Example request:
 POST /api/v2/sensors HTTP/1.1
 Host: localhost:5000
 Content-Type: application/json
-
+```
+```json
 {
     "name": "basement",
     "temperature": 25,
@@ -467,7 +468,8 @@ Example response:
     "energy": 30.0,
     "name": "panel 1.2.4",
     "panel_id": 123456,
-    "timestamp": "2022-12-13 19:55:34"}
+    "timestamp": "2022-12-13 19:55:34"
+}
 ```
 
 Where the parameters in the response are described as:
