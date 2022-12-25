@@ -383,7 +383,68 @@ Possible errors:
 | 400           | Any of the required parameters are missing.   |
 
 ### Get panel values
-    
+List values of a panel:
+```
+POST /api/v2/panels/<id> HTTP/1.1
+```    
+By default the 20 latest values are returned, i.e. the same as `offset=0&limit=20`.
+
+| Parameter     | Type          | Required? | Description   |
+| ------------- | ------------- | -----     | ---           |
+| `date`        | string        | optional  | Will filter the result to include values from the given date in the format `2019-12-27`. |
+| `limit`       | int           | optional  | Use together with offset to paginate the results. |
+| `offset`      | int           | optional  | Use together with limit to paginate the results. |
+| `sort`        | enum          | optional  | Order the result ascending or descending based on timestamp with possible values of `asc`or `desc.` |
+| `timestamp`   | int           | optional  | Filters the result to include values that matches the given datetime in the format `2019-12-27 18:05:22`. |
+
+Both the `date` and the `timestamp` attributes can have an operator added to it. The valid operators are `qe`, `gt`, `ge`, `lt`, `te`. 
+
+Example request:
+```
+GET /api/v2/panels/123456?date[gt]=2019-12-26 HTTP/1.1
+Host: localhost:5000
+Content-Type: application/json
+``` 
+
+Example response:
+``` json
+[
+    {
+        "alarm_state":false,
+        "efficiency":51.0,
+        "energy":30.0,
+        "name":"panel 1.2.4",
+        "panel_id":123456,
+        "timestamp":"2022-12-13 19:55:34"
+    },
+    {
+        "alarm_state":false,
+        "efficiency":31.0,
+        "energy":12.0,
+        "name":"panel 1.2.4",
+        "panel_id":123456,
+        "timestamp":"2022-12-13 19:55:17"
+    }
+]
+```
+
+Where the parameters in the response are described as:
+
+| Parameter     | Type          | Description   |
+| ------------- | ------------- | ---           |
+| `alarm_state` | boolean       | Whether the panel is in alarm state or not.  |
+| `efficiency`  | real          | The production level in % compared to the best producing panel. |
+| `energy`      | real          | The amount of produced energy of the panel. |
+| `name`        | string        | Name of the panel. |
+| `panel_id`    | int           | The id of the panel. |
+| `timestamp`   | string        | The date and time of when the value was measured. |
+
+
+Possible errors:
+
+| Error code    | Description   |
+| ------------- | -----------   |
+| 400           | Any of the querystring parameters are not valid.  |
 
 ### Get latest panel values
 
