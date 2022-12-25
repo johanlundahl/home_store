@@ -15,7 +15,7 @@ Clone this git repo
 $ git clone https://github.com/johanlundahl/home_store
 ```
 
-Requires python 3.6 or above. Install required python modules and create the database
+Requires python 3.9 or above. Install required python modules and create the database
 
 ```
 $ make init
@@ -49,18 +49,48 @@ $ python3 -m home_store.cmdtool -h
 The application exposes http endpoint to interact with. The web application runs on port 5000 by default and has the endpoints listed below.
 
 The following endpoints are exposed by the application:
+* [Endpoints](#endpoints)
 * [Status](#status)
-* [List sensors](#list-sensors)
-* [Add sensor value](#add-sensor-value)
-* [Get sensor values](#get-sensor-values)
-* [Get latest sensor value](#get-latest-sensor-value)
-* [Get sensor history](#get-sensor-history)
+* Sensors
+    * [List sensors](#list-sensors)
+    * [Add sensor value](#add-sensor-value)
+    * [Get sensor values](#get-sensor-values)
+    * [Get latest sensor value](#get-latest-sensor-value)
+    * [Get sensor history](#get-sensor-history)
+* Panels
+    * [Get panels](#get-panels)
+    * [Add panel](#add-panel)
+    * [Get panel values](#get-panel-values)
+    * [Get latest panel values](#get-latest-panel-values)
 
+
+### Endpoints
+Lists all endpoint of the application:
+```
+GET /api/v2 HTTP/1.1
+```
+
+Example request:
+```
+GET /api/v2 HTTP/1.1
+Host: localhost:5000
+Content-Type: application/json
+```
+
+Example response:
+``` json
+[
+    "/api/v2",
+    "/api/v2/status",
+    "/api/v2/sensors",
+    "/api/v2/panels"
+]
+``` 
 
 ### Status
 Get the status of the application database:
 ```
-GET /api/status HTTP/1.1
+GET /api/v2/status HTTP/1.1
 ```
 
 Example request:
@@ -292,4 +322,14 @@ GET /api/sensors/<name>/history HTTP/1.1
 | `from`        | string        | optional  | Start time in the format `2020-02-01 23:15:30`. |
 | `to`          | string        | optional  | End time in the format `2020-02-05 12:30:00`. |
 | `resolution`  | int           | optional  | Reduces the number of sensor values to the specified value. The resulting values are scattered over the given date interval. |
+
+
+### Get panels
+
+### Add panel
+
+### Get panel values
+
+### Get latest panel values
+
 
