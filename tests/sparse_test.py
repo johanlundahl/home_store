@@ -1,5 +1,5 @@
 import unittest
-from pytils.http import Filter
+# from pytils.http import Filter
 from home_store.helpers import sparse, populate
 from home_store.models import Sensor
 from home_store.app import app, mydb
@@ -61,10 +61,10 @@ class PopulateTest(TestCase):
     def test_sparse_day(self):
         populate.create_for_day("sensor 12", "2022-12-12", 50)
         with app.app_context():
-            filters = [Sensor.date == '2022-12-12']
+            # filters = [Sensor.date == '2022-12-12']
             sensors = mydb.sensor("sensor 12", filters=[], limit=100)
             self.assertEqual(len(sensors), 50)
-        sparse.sparse_day("sensor 12", "2022-12-12")        
+        sparse.sparse_day("sensor 12", "2022-12-12")
 
     @unittest.skip
     def test_sparse_period(self):
