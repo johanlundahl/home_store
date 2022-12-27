@@ -20,7 +20,7 @@ def sparse_records(records):
 
 
 def remove_records(records):
-    with mydb:
+    with app.app_context():
         for record in records:
             mydb.delete(record)
             mydb.session.commit()
@@ -39,7 +39,6 @@ def sparse_day(name, date):
 
 
 def sparse_period(name, period):
-    print('SpARSE', name, period)
     if len(period) == 7:
         year, month = get_int_tuple(period)
         num_days = calendar.monthrange(year, month)[1]

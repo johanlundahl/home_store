@@ -1,5 +1,6 @@
 import unittest
-from home_store.helpers import sparse
+from pytils.http import Filter
+from home_store.helpers import sparse, populate
 from home_store.models import Sensor
 from home_store.app import app, mydb
 from flask_testing import TestCase
@@ -51,15 +52,23 @@ class PopulateTest(TestCase):
 
     def test_remove_records(self):
         dt = datetime.strptime('2022-12-20 11:15:03', '%Y-%m-%d %H:%M:%S')
-        sensors = []
-        sensors.append(Sensor('B', 10, 20, dt+timedelta(hours=2)))
-        sensors.append(Sensor('B', 20, 30, dt+timedelta(hours=1)))
-        sensors.append(Sensor('AB', 30, 40, dt+timedelta(days=2)))
-        with mydb:
-            for sensor in sensors:
-                mydb.add(sensor)
+        populate.create_for_day("MySensor", "2022-12-12", 5)
+        populate.create_for_day("MyOtherSensor", "2022-12-12", 6)
+        sensors = sparse.sensor_records("MySensor", dt)
         sparse.remove_records(sensors)
-        self.assertEqual(len(sparse.sensor_records('B', dt)), 0)
+        self.assertEqual(len(sparse.sensor_records('MySensor', dt)), 0)
+
+    def test_sparse_day(self):
+        populate.create_for_day("sensor 12", "2022-12-12", 50)
+        with app.app_context():
+            filters = [Sensor.date == '2022-12-12']
+            sensors = mydb.sensor("sensor 12", filters=[], limit=100)
+            self.assertEqual(len(sensors), 50)
+        sparse.sparse_day("sensor 12", "2022-12-12")        
+
+    @unittest.skip
+    def test_sparse_period(self):
+        pass
 
 
 if __name__ == '__main__':
