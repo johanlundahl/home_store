@@ -59,19 +59,25 @@ class PopulateTest(TestCase):
         self.assertEqual(len(sparse.sensor_records('MySensor', dt)), 0)
 
     def test_sparse_day(self):
-        populate.create_for_day("sensor 12", "2022-12-12", 100)
+        populate.create_for_day("sensor 12", "2022-12-12", 50)
         with app.app_context():
-            # date_eq = lambda x: x.date == '2022-12-12'
-            # filters = date_eq
             sensors = mydb.sensor("sensor 12", filters=[], limit=100)
-            self.assertEqual(len(sensors), 100)
+            self.assertEqual(len(sensors), 50)
         sparse.sparse_day("sensor 12", "2022-12-12")
-        sensors = mydb.sensor("sensor 12", filters=[], limit=100)
-        self.assertEqual(len(sensors), 24)
+        with app.app_context():
+            sensors = mydb.sensor("sensor 12", filters=[], limit=100)
+            self.assertTrue(len(sensors) <= 24)
 
-    @unittest.skip
     def test_sparse_period(self):
-        pass
+        populate.create_for_period("sensor 1", "2022-11", 30)
+        with app.app_context():
+            sensors = mydb.sensor("sensor 1", filters=[], limit=910)
+            self.assertEqual(len(sensors), 900)
+        sparse.sparse_period("sensor 1", "2022-11")
+        with app.app_context():
+            sensors = mydb.sensor("sensor 1", filters=[], limit=910)
+            self.assertTrue(len(sensors) <= 720,
+                            f'{len(sensors)} is not <= 720')
 
 
 if __name__ == '__main__':
