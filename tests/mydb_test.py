@@ -1,8 +1,9 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 import unittest
 from flask_testing import TestCase
 from home_store.models import Sensor, Panel
 from home_store.app import app, mydb
+from pytils.http import Filter
 
 
 class TestMyDB(TestCase):
@@ -41,6 +42,27 @@ class TestMyDB(TestCase):
             sensor = mydb.sensor('one')
             self.assertFalse(sensor)
 
+    def test_get_sensor_values(self):
+        name = 'TheSensor'
+        dt = datetime.strptime('2022-12-24 11:15:03', '%Y-%m-%d %H:%M:%S')
+        with mydb:
+            for i in range(6):
+                mydb.add(Sensor(name, i, i, dt+timedelta(minutes=i)))
+        with mydb:
+            sensors = mydb.sensor(name)
+            self.assertEqual(len(sensors), 6)
+
+    def test_get_sensor_values_with_filter(self):
+        name = 'Another Sensor'
+        dt = datetime.strptime('2022-12-01 11:15:03', '%Y-%m-%d %H:%M:%S')
+        with mydb:
+            for i in range(10):
+                mydb.add(Sensor(name, i, i, dt+timedelta(days=i)))
+        with mydb:
+            afilter = Filter('date', 'gt', '2022-12-05')
+            sensors = mydb.sensor(name, filters=[afilter.to_json()])
+            self.assertEqual(len(sensors), 5)
+
     def test_add_a_sensor(self):
         sensor = Sensor('fake', 12.0, 55.5, datetime.now())
         with mydb:
@@ -70,7 +92,12 @@ class TestMyDB(TestCase):
             min = mydb.sensor_min(sensor.name, sensor.date)
             self.assertEqual(min.temperature, 10)
 
-    def test_sensors_something_something(self):
+    @unittest.skip
+    def test_sensor_history(self):
+        pass
+
+    @unittest.skip
+    def test_sensor_hourly_trend(self):
         pass
 
     def test_panels(self):
