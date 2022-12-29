@@ -7,8 +7,9 @@ This project stores sensor reading values to a database. Other components can in
 
 This project is suitable to run on a Raspberry Pi and is intended to use with [Home Monitor](http://github.com/johanlundahl/home_monitor), [Temp Sensor](http://github.com/johanlundahl/temp_sensor), [Home Eye](http://github.com/johanlundahl/home_eye) and [Mosquitto MQTT Broker](https://randomnerdtutorials.com/how-to-install-mosquitto-broker-on-raspberry-pi/).
 
-## Installation
+## Installation guide
 
+### Set up the application
 Clone this git repo
 
 ```
@@ -19,26 +20,25 @@ Requires python 3.9 or above. Install required python modules and create the dat
 
 ```
 $ make init
-```
+``` 
 
-## Running
+### Running
 Run the application using
 ```
 $ make run
 ```
-
-To make the application start automatically at reboot run the following command
+This will also create the required config file `home_store/app.yaml` if it doesn't already exist. To make the application start automatically at reboot run the following command
 ```
 $ make autostart
 ```
 
-## Logging
+### Logging
 Application events are logged to the application log file and can be viewed through
 ```
 $ make logging
 ```
 
-## Database functionality
+### Database functionality
 Use the cmdtool to setup, clean or drop the database. It can also help you simulate database entries for testing. Se the complete list of functionality by entering
 ```
 $ python3 -m home_store.cmdtool -h
