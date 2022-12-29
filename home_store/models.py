@@ -22,9 +22,8 @@ class MyDB(SQLAlchemy):
                hours=None):
         order_by = self.get_sort_order(Sensor, sort)
         query = self.session.query(Sensor).filter_by(name=name)
-        for a_filter in filters:
-            # query = apply_filters(query, a_filter)
-            query = query.filter(a_filter)
+        if len(filters) > 0:
+            query = apply_filters(query, filters)
         if hours is not None:
             query = query.filter(extract('hour', Sensor.timestamp).in_(hours))
         return query.order_by(order_by).offset(offset).limit(limit).all()
