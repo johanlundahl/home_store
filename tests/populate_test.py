@@ -33,7 +33,6 @@ class PopulateTest(TestCase):
             sensors = mydb.sensor('tmp')
             self.assertEqual(len(sensors), 10)
 
-    @unittest.skip
     def test_create_for_period_by_day(self):
         populate.create_for_period('sensor 1', '2022-12-01', 5)
         populate.create_for_period('sensor 1', '2022-12-02', 7)
